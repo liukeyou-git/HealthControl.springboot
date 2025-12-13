@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 健康指标控制器 
+ * 健康指标控制器
  */
 @RestController()
 @RequestMapping("/HealthIndicator")
 public class HealthIndicatorController {
-    @Autowired
-    private  HealthIndicatorService HealthIndicatorService;
-    @Autowired
+    @Autowired()
+    private HealthIndicatorService HealthIndicatorService;
+    @Autowired()
     private HealthIndicatorMapper HealthIndicatorMapper;
+
     /**
      * 健康指标分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<HealthIndicatorDto> List(@RequestBody HealthIndicatorPagedInput input)  {
+    public PagedResult<HealthIndicatorDto> List(@RequestBody HealthIndicatorPagedInput input) {
         return HealthIndicatorService.List(input);
     }
-     /**
+
+    /**
      * 单个健康指标查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class HealthIndicatorController {
 
         return HealthIndicatorService.Get(input);
     }
-  
+
     /**
      * 健康指标创建或则修改
      */
@@ -60,12 +64,12 @@ public class HealthIndicatorController {
     public HealthIndicatorDto CreateOrEdit(@RequestBody HealthIndicatorDto input) throws Exception {
         return HealthIndicatorService.CreateOrEdit(input);
     }
+
     /**
      * 健康指标删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         HealthIndicatorService.Delete(input);
     }
 
@@ -73,11 +77,39 @@ public class HealthIndicatorController {
      * 健康指标批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         HealthIndicatorService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 用户添加公共指标
+     */
+    @RequestMapping(value = "/UserAddCommIndicator", method = RequestMethod.POST)
+    public void UserAddCommIndicator(@RequestBody HealthIndicatorDto input) {
+        HealthIndicatorService.UserAddCommIndicator(input);
+    }
+
+    /**
+     * 用户取消公共指标
+     */
+    @RequestMapping(value = "/UserCancelCommIndicator", method = RequestMethod.POST)
+    public void UserCancelCommIndicator(@RequestBody HealthIndicatorDto input) {
+        HealthIndicatorService.UserCancelCommIndicator(input);
+    }
+
+    /**
+     * 用户删除指标
+     */
+    @RequestMapping(value = "/UserRemoveIndicator", method = RequestMethod.POST)
+    public void UserRemoveIndicator(@RequestBody HealthIndicatorDto input) {
+        HealthIndicatorService.UserRemoveIndicator(input);
+    }
+
+    /**
+     * 用户创建或修改指标
+     */
+    @RequestMapping(value = "/UserCreateOrEditIndicator", method = RequestMethod.POST)
+    public void UserCreateOrEditIndicator(@RequestBody HealthIndicatorDto input) {
+        HealthIndicatorService.UserCreateOrEditIndicator(input);
+    }
 }

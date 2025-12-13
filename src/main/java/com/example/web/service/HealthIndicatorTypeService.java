@@ -1,4 +1,5 @@
 package com.example.web.service;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * 健康指标分类功能的Service接口的定义清单
  */
@@ -20,17 +22,19 @@ public interface HealthIndicatorTypeService extends IService<HealthIndicatorType
     /**
      * 健康指标分类的分页查询方法接口定义
      */
-    public PagedResult<HealthIndicatorTypeDto> List(HealthIndicatorTypePagedInput input) ;
+    public PagedResult<HealthIndicatorTypeDto> List(HealthIndicatorTypePagedInput input);
+
     /**
      * 健康指标分类的新增或者修改方法接口定义
      */
     public HealthIndicatorTypeDto CreateOrEdit(HealthIndicatorTypeDto input);
 
-     /**
+    /**
      * 获取健康指标分类信息
      */
     public HealthIndicatorTypeDto Get(HealthIndicatorTypePagedInput input);
- 	 /**
+
+    /**
      * 健康指标分类删除
      */
     public void Delete(IdInput input);
@@ -39,6 +43,15 @@ public interface HealthIndicatorTypeService extends IService<HealthIndicatorType
      * 健康指标分类批量删除
      */
     public void BatchDelete(IdsInput input);
-  
+
+    /**
+     * 官方公开的健康指标分类分页查询
+     */
+    public PagedResult<UserHealthIndicatorTypeDto> CommUserHealthIndicatorList(HealthIndicatorTypePagedInput input);
+
+    /**
+     * 用户的健康指标分类分页查询
+     */
+    public PagedResult<UserHealthIndicatorTypeDto> UserHealthIndicatorList(HealthIndicatorTypePagedInput input);
 
 }

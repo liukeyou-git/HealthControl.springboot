@@ -1,4 +1,6 @@
 package com.example.web.dto;
+
+import com.example.web.dto.query.UserHealthIndicatorDto;
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,14 +21,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 健康指标分类类
  */
 @Data
-public class HealthIndicatorTypeDto extends BaseDto
-{
-
-
+public class UserHealthIndicatorTypeDto extends BaseDto {
 
     /**
      * 分类名称
@@ -34,13 +34,11 @@ public class HealthIndicatorTypeDto extends BaseDto
     @JsonProperty("Name")
     private String Name;
 
-
     /**
      * 所属人
      */
     @JsonProperty("BelongUserId")
     private Integer BelongUserId;
-
 
     /**
      * 是否公用
@@ -48,22 +46,27 @@ public class HealthIndicatorTypeDto extends BaseDto
     @JsonProperty("IsComm")
     private Boolean IsComm;
 
-     @JsonProperty("BelongUserDto")
+    @JsonProperty("BelongUserDto")
     private AppUserDto BelongUserDto;
 
-    /**
-     * 对应的指标
-      */
+    /* 对应的指标 */
     @JsonProperty("HealthIndicatorDtoList")
-    private List<HealthIndicatorDto> HealthIndicatorDtoList;
+    private List<UserHealthIndicatorDto> HealthIndicatorDtoList;
 
- 	 /**
+    /**
+     * 是否已选择
+     * 
+     */
+    @JsonProperty("IsSelected")
+    private Boolean IsSelected;
+
+    /**
      * 把健康指标分类传输模型转换成健康指标分类实体
      */
     public HealthIndicatorType MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        HealthIndicatorType HealthIndicatorType= new HealthIndicatorType();
+        HealthIndicatorType HealthIndicatorType = new HealthIndicatorType();
 
-         BeanUtils.copyProperties(HealthIndicatorType,this);
+        BeanUtils.copyProperties(HealthIndicatorType, this);
 
         return HealthIndicatorType;
     }

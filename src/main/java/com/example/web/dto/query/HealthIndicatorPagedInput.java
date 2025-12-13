@@ -49,4 +49,7 @@ public class HealthIndicatorPagedInput extends PagedInput {
   	 @JsonProperty("IsComm")
     private Boolean IsComm;
 
+     @JsonProperty("Content")
+    private String Content;
+
 }

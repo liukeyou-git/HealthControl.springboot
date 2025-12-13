@@ -1,4 +1,6 @@
-package com.example.web.dto;
+package com.example.web.dto.query;
+import com.example.web.dto.AppUserDto;
+import com.example.web.dto.HealthIndicatorTypeDto;
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -23,7 +25,7 @@ import java.util.HashMap;
  * 健康指标类
  */
 @Data
-public class HealthIndicatorDto extends BaseDto
+public class UserHealthIndicatorDto extends BaseDto
 {
 
     
@@ -74,19 +76,21 @@ public class HealthIndicatorDto extends BaseDto
      * 指标归类
      */ 
     @JsonProperty("HealthIndicatorTypeId")
-    private Integer HealthIndicatorTypeId;
+    private Integer HealthIndicatorTypeId;          
 
-    /**
-     * 指标名称
-     */
-    @JsonProperty("HealthIndicatorTypeName")
-    private String HealthIndicatorTypeName;
-
-    @JsonProperty("BelongUserDto")
-    private AppUserDto BelongUserDto;                        
-   
      @JsonProperty("HealthIndicatorTypeDto") 
-    private HealthIndicatorTypeDto HealthIndicatorTypeDto;                        
+    private HealthIndicatorTypeDto HealthIndicatorTypeDto;
+   
+     @JsonProperty("BelongUserDto") 
+    private AppUserDto BelongUserDto;
+    
+    /**
+     * 是否已选择
+     */
+    @JsonProperty("IsSelected")
+    private Boolean IsSelected;
+
+    
    
  	 /**
      * 把健康指标传输模型转换成健康指标实体

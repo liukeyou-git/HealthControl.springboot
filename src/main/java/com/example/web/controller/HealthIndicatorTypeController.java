@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 健康指标分类控制器 
+ * 健康指标分类控制器
  */
 @RestController()
 @RequestMapping("/HealthIndicatorType")
 public class HealthIndicatorTypeController {
-    @Autowired
-    private  HealthIndicatorTypeService HealthIndicatorTypeService;
-    @Autowired
+    @Autowired()
+    private HealthIndicatorTypeService HealthIndicatorTypeService;
+    @Autowired()
     private HealthIndicatorTypeMapper HealthIndicatorTypeMapper;
+
     /**
      * 健康指标分类分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<HealthIndicatorTypeDto> List(@RequestBody HealthIndicatorTypePagedInput input)  {
+    public PagedResult<HealthIndicatorTypeDto> List(@RequestBody HealthIndicatorTypePagedInput input) {
         return HealthIndicatorTypeService.List(input);
     }
-     /**
+
+    /**
      * 单个健康指标分类查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class HealthIndicatorTypeController {
 
         return HealthIndicatorTypeService.Get(input);
     }
-  
+
     /**
      * 健康指标分类创建或则修改
      */
@@ -60,12 +64,12 @@ public class HealthIndicatorTypeController {
     public HealthIndicatorTypeDto CreateOrEdit(@RequestBody HealthIndicatorTypeDto input) throws Exception {
         return HealthIndicatorTypeService.CreateOrEdit(input);
     }
+
     /**
      * 健康指标分类删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         HealthIndicatorTypeService.Delete(input);
     }
 
@@ -73,11 +77,25 @@ public class HealthIndicatorTypeController {
      * 健康指标分类批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         HealthIndicatorTypeService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 官方公开的健康指标分类分页查询
+     */
+    @RequestMapping(value = "/CommUserHealthIndicatorList", method = RequestMethod.POST)
+    public PagedResult<UserHealthIndicatorTypeDto> CommUserHealthIndicatorList(
+            @RequestBody HealthIndicatorTypePagedInput input) {
+        return HealthIndicatorTypeService.CommUserHealthIndicatorList(input);
+    }
+
+    /**
+     * 用户的健康指标分类分页查询
+     */
+    @RequestMapping(value = "/UserHealthIndicatorList", method = RequestMethod.POST)
+    public PagedResult<UserHealthIndicatorTypeDto> UserHealthIndicatorList(
+            @RequestBody HealthIndicatorTypePagedInput input) {
+        return HealthIndicatorTypeService.UserHealthIndicatorList(input);
+    }
 }

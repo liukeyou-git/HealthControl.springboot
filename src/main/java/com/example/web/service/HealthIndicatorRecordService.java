@@ -1,4 +1,5 @@
 package com.example.web.service;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * 健康指标记录功能的Service接口的定义清单
  */
@@ -20,17 +22,19 @@ public interface HealthIndicatorRecordService extends IService<HealthIndicatorRe
     /**
      * 健康指标记录的分页查询方法接口定义
      */
-    public PagedResult<HealthIndicatorRecordDto> List(HealthIndicatorRecordPagedInput input) ;
+    public PagedResult<HealthIndicatorRecordDto> List(HealthIndicatorRecordPagedInput input);
+
     /**
      * 健康指标记录的新增或者修改方法接口定义
      */
     public HealthIndicatorRecordDto CreateOrEdit(HealthIndicatorRecordDto input);
 
-     /**
+    /**
      * 获取健康指标记录信息
      */
     public HealthIndicatorRecordDto Get(HealthIndicatorRecordPagedInput input);
- 	 /**
+
+    /**
      * 健康指标记录删除
      */
     public void Delete(IdInput input);
@@ -39,6 +43,10 @@ public interface HealthIndicatorRecordService extends IService<HealthIndicatorRe
      * 健康指标记录批量删除
      */
     public void BatchDelete(IdsInput input);
-  
+
+    /**
+     * 健康指标记录批量创建
+     */
+    public void BatchAdd(List<HealthIndicatorRecordDto> input);
 
 }

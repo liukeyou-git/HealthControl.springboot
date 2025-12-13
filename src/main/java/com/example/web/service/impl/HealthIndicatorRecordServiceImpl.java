@@ -1,4 +1,5 @@
 package com.example.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,13 +33,15 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.web.bind.annotation.RequestParam;
+
 /**
  * 健康指标记录功能实现类
  */
 @Service
-public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicatorRecordMapper, HealthIndicatorRecord> implements HealthIndicatorRecordService {
+public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicatorRecordMapper, HealthIndicatorRecord>
+        implements HealthIndicatorRecordService {
 
-	 /**
+    /**
      * 操作数据库AppUser表mapper对象
      */
     @Autowired
@@ -49,85 +52,82 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
     @Autowired
     private HealthIndicatorRecordMapper HealthIndicatorRecordMapper;
     @Autowired
-    private HealthIndicatorTypeMapper  HealthIndicatorTypeMapper;                        
+    private HealthIndicatorMapper HealthIndicatorMapper;
     @Autowired
-    private HealthIndicatorMapper  HealthIndicatorMapper;                        
+    private HealthIndicatorTypeMapper HealthIndicatorTypeMapper;
 
-  
-   /**
+    /**
      * 构建表查询sql
      */
     private LambdaQueryWrapper<HealthIndicatorRecord> BuilderQuery(HealthIndicatorRecordPagedInput input) {
-       //声明一个支持健康指标记录查询的(拉姆达)表达式
+        // 声明一个支持健康指标记录查询的(拉姆达)表达式
         LambdaQueryWrapper<HealthIndicatorRecord> queryWrapper = Wrappers.<HealthIndicatorRecord>lambdaQuery()
                 .eq(input.getId() != null && input.getId() != 0, HealthIndicatorRecord::getId, input.getId());
-   //如果前端搜索传入查询条件则拼接查询条件
+        // 如果前端搜索传入查询条件则拼接查询条件
         if (Extension.isNotNullOrEmpty(input.getIsAbnormity())) {
-             queryWrapper = queryWrapper.like(HealthIndicatorRecord::getIsAbnormity, input.getIsAbnormity());
-       	 }
+            queryWrapper = queryWrapper.like(HealthIndicatorRecord::getIsAbnormity, input.getIsAbnormity());
+        }
+
+        if (input.getHealthIndicatorTypeId() != null) {
+            queryWrapper = queryWrapper.eq(HealthIndicatorRecord::getHealthIndicatorTypeId,
+                    input.getHealthIndicatorTypeId());
+        }
 
         if (input.getHealthIndicatorId() != null) {
             queryWrapper = queryWrapper.eq(HealthIndicatorRecord::getHealthIndicatorId, input.getHealthIndicatorId());
-       	 }
-
-        if (input.getHealthIndicatorTypeId() != null) {
-            queryWrapper = queryWrapper.eq(HealthIndicatorRecord::getHealthIndicatorTypeId, input.getHealthIndicatorTypeId());
-       	 }
+        }
 
         if (input.getRecordUserId() != null) {
             queryWrapper = queryWrapper.eq(HealthIndicatorRecord::getRecordUserId, input.getRecordUserId());
-       	 }
+        }
         if (input.getRecordTimeRange() != null && !input.getRecordTimeRange().isEmpty()) {
             queryWrapper = queryWrapper.le(HealthIndicatorRecord::getRecordTime, input.getRecordTimeRange().get(1));
             queryWrapper = queryWrapper.ge(HealthIndicatorRecord::getRecordTime, input.getRecordTimeRange().get(0));
         }
-      
 
- 
- 
-     if(Extension.isNotNullOrEmpty(input.getKeyWord()))
-        {
-			queryWrapper=queryWrapper.and(i->i
-          	   .like(HealthIndicatorRecord::getIsAbnormity,input.getKeyWord()).or()   	 
-        );
-                                       
- 		   }
-    
-      return queryWrapper;
+        if (Extension.isNotNullOrEmpty(input.getKeyWord())) {
+            queryWrapper = queryWrapper.and(i -> i
+                    .like(HealthIndicatorRecord::getIsAbnormity, input.getKeyWord()).or());
+
+        }
+
+        return queryWrapper;
     }
-  
+
     /**
      * 处理健康指标记录对于的外键数据
      */
-   private List<HealthIndicatorRecordDto> DispatchItem(List<HealthIndicatorRecordDto> items) throws InvocationTargetException, IllegalAccessException {
-          
-       for (HealthIndicatorRecordDto item : items) {           
-          	            
-           //查询出关联的AppUser表信息           
-            AppUser  RecordUserEntity= AppUserMapper.selectById(item.getRecordUserId());
-            item.setRecordUserDto(RecordUserEntity!=null?RecordUserEntity.MapToDto():new AppUserDto());              
-           
-          	            
-           //查询出关联的HealthIndicatorType表信息           
-            HealthIndicatorType  HealthIndicatorTypeEntity= HealthIndicatorTypeMapper.selectById(item.getHealthIndicatorTypeId());
-            item.setHealthIndicatorTypeDto(HealthIndicatorTypeEntity!=null?HealthIndicatorTypeEntity.MapToDto():new HealthIndicatorTypeDto());              
-           
-          	            
-           //查询出关联的HealthIndicator表信息           
-            HealthIndicator  HealthIndicatorEntity= HealthIndicatorMapper.selectById(item.getHealthIndicatorId());
-            item.setHealthIndicatorDto(HealthIndicatorEntity!=null?HealthIndicatorEntity.MapToDto():new HealthIndicatorDto());              
-       }
-       
-     return items; 
-   }
-  
+    private List<HealthIndicatorRecordDto> DispatchItem(List<HealthIndicatorRecordDto> items)
+            throws InvocationTargetException, IllegalAccessException {
+
+        for (HealthIndicatorRecordDto item : items) {
+
+            // 查询出关联的HealthIndicator表信息
+            HealthIndicator HealthIndicatorEntity = HealthIndicatorMapper.selectById(item.getHealthIndicatorId());
+            item.setHealthIndicatorDto(
+                    HealthIndicatorEntity != null ? HealthIndicatorEntity.MapToDto() : new HealthIndicatorDto());
+
+            // 查询出关联的AppUser表信息
+            AppUser RecordUserEntity = AppUserMapper.selectById(item.getRecordUserId());
+            item.setRecordUserDto(RecordUserEntity != null ? RecordUserEntity.MapToDto() : new AppUserDto());
+
+            // 查询出关联的HealthIndicatorType表信息
+            HealthIndicatorType HealthIndicatorTypeEntity = HealthIndicatorTypeMapper
+                    .selectById(item.getHealthIndicatorTypeId());
+            item.setHealthIndicatorTypeDto(HealthIndicatorTypeEntity != null ? HealthIndicatorTypeEntity.MapToDto()
+                    : new HealthIndicatorTypeDto());
+        }
+
+        return items;
+    }
+
     /**
      * 健康指标记录分页查询
      */
     @SneakyThrows
     @Override
     public PagedResult<HealthIndicatorRecordDto> List(HealthIndicatorRecordPagedInput input) {
-			//构建where条件+排序
+        // 构建where条件+排序
         LambdaQueryWrapper<HealthIndicatorRecord> queryWrapper = BuilderQuery(input);
         // 动态排序处理
         if (input.getSortItem() != null) {
@@ -139,49 +139,50 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
             queryWrapper = queryWrapper.orderByDesc(HealthIndicatorRecord::getCreationTime);
         }
 
-        //构建一个分页查询的model
+        // 构建一个分页查询的model
         Page<HealthIndicatorRecord> page = new Page<>(input.getPage(), input.getLimit());
-         //从数据库进行分页查询获取健康指标记录数据
-        IPage<HealthIndicatorRecord> pageRecords= HealthIndicatorRecordMapper.selectPage(page, queryWrapper);
-        //获取所有满足条件的数据行数
-        Long totalCount= HealthIndicatorRecordMapper.selectCount(queryWrapper);
-        //把HealthIndicatorRecord实体转换成HealthIndicatorRecord传输模型
-        List<HealthIndicatorRecordDto> items= Extension.copyBeanList(pageRecords.getRecords(),HealthIndicatorRecordDto.class);
+        // 从数据库进行分页查询获取健康指标记录数据
+        IPage<HealthIndicatorRecord> pageRecords = HealthIndicatorRecordMapper.selectPage(page, queryWrapper);
+        // 获取所有满足条件的数据行数
+        Long totalCount = HealthIndicatorRecordMapper.selectCount(queryWrapper);
+        // 把HealthIndicatorRecord实体转换成HealthIndicatorRecord传输模型
+        List<HealthIndicatorRecordDto> items = Extension.copyBeanList(pageRecords.getRecords(),
+                HealthIndicatorRecordDto.class);
 
-		   DispatchItem(items);
-        //返回一个分页结构给前端
-        return PagedResult.GetInstance(items,totalCount);
+        DispatchItem(items);
+        // 返回一个分页结构给前端
+        return PagedResult.GetInstance(items, totalCount);
 
     }
-  
+
     /**
      * 单个健康指标记录查询
      */
     @SneakyThrows
     @Override
     public HealthIndicatorRecordDto Get(HealthIndicatorRecordPagedInput input) {
-       if(input.getId()==null)
-        {
-         return new HealthIndicatorRecordDto();
+        if (input.getId() == null) {
+            return new HealthIndicatorRecordDto();
         }
-      
-       PagedResult<HealthIndicatorRecordDto> pagedResult = List(input);
-        return pagedResult.getItems().stream().findFirst().orElse(new HealthIndicatorRecordDto()); 
+
+        PagedResult<HealthIndicatorRecordDto> pagedResult = List(input);
+        return pagedResult.getItems().stream().findFirst().orElse(new HealthIndicatorRecordDto());
     }
 
     /**
-     *健康指标记录创建或者修改
+     * 健康指标记录创建或者修改
      */
     @SneakyThrows
     @Override
     public HealthIndicatorRecordDto CreateOrEdit(HealthIndicatorRecordDto input) {
-        //声明一个健康指标记录实体
-        HealthIndicatorRecord HealthIndicatorRecord=input.MapToEntity();  
-        //调用数据库的增加或者修改方法
+        // 声明一个健康指标记录实体
+        HealthIndicatorRecord HealthIndicatorRecord = input.MapToEntity();
+        // 调用数据库的增加或者修改方法
         saveOrUpdate(HealthIndicatorRecord);
-        //把传输模型返回给前端
+        // 把传输模型返回给前端
         return HealthIndicatorRecord.MapToDto();
     }
+
     /**
      * 健康指标记录删除
      */
@@ -200,6 +201,18 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
             IdInput idInput = new IdInput();
             idInput.setId(id);
             Delete(idInput);
+        }
+    }
+
+    /**
+     * 健康指标记录批量创建
+     */
+    @SneakyThrows
+    @Override
+    public void BatchAdd(List<HealthIndicatorRecordDto> input) {
+
+        for (HealthIndicatorRecordDto item : input) {
+            CreateOrEdit(item);
         }
     }
 }

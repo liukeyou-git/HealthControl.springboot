@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 健康指标记录控制器 
+ * 健康指标记录控制器
  */
 @RestController()
 @RequestMapping("/HealthIndicatorRecord")
 public class HealthIndicatorRecordController {
-    @Autowired
-    private  HealthIndicatorRecordService HealthIndicatorRecordService;
-    @Autowired
+    @Autowired()
+    private HealthIndicatorRecordService HealthIndicatorRecordService;
+    @Autowired()
     private HealthIndicatorRecordMapper HealthIndicatorRecordMapper;
+
     /**
      * 健康指标记录分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<HealthIndicatorRecordDto> List(@RequestBody HealthIndicatorRecordPagedInput input)  {
+    public PagedResult<HealthIndicatorRecordDto> List(@RequestBody HealthIndicatorRecordPagedInput input) {
         return HealthIndicatorRecordService.List(input);
     }
-     /**
+
+    /**
      * 单个健康指标记录查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class HealthIndicatorRecordController {
 
         return HealthIndicatorRecordService.Get(input);
     }
-  
+
     /**
      * 健康指标记录创建或则修改
      */
@@ -60,12 +64,12 @@ public class HealthIndicatorRecordController {
     public HealthIndicatorRecordDto CreateOrEdit(@RequestBody HealthIndicatorRecordDto input) throws Exception {
         return HealthIndicatorRecordService.CreateOrEdit(input);
     }
+
     /**
      * 健康指标记录删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         HealthIndicatorRecordService.Delete(input);
     }
 
@@ -73,11 +77,15 @@ public class HealthIndicatorRecordController {
      * 健康指标记录批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         HealthIndicatorRecordService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 健康指标记录批量创建
+     */
+    @RequestMapping(value = "/BatchAdd", method = RequestMethod.POST)
+    public void BatchAdd(@RequestBody List<HealthIndicatorRecordDto> input) {
+        HealthIndicatorRecordService.BatchAdd(input);
+    }
 }

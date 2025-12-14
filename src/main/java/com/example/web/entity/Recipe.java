@@ -1,4 +1,5 @@
 package com.example.web.entity;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
+
 /**
  * 食谱表
  */
@@ -27,87 +29,93 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 @TableName("`Recipe`")
 public class Recipe extends BaseEntity {
 
-      
-  	  /**
+    /**
      * 标题
-     */  
+     */
     @JsonProperty("Title")
-    @TableField(value="Title",updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Title", updateStrategy = FieldStrategy.IGNORED)
     private String Title;
-      
-  	  /**
+
+    /**
      * 封面
-     */  
+     */
     @JsonProperty("Cover")
-    @TableField(value="Cover",updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Cover", updateStrategy = FieldStrategy.IGNORED)
     private String Cover;
-      
-  	  /**
+
+    /**
      * 详细图
-     */  
+     */
     @JsonProperty("ImageUrls")
-    @TableField(value="ImageUrls",updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "ImageUrls", updateStrategy = FieldStrategy.IGNORED)
     private String ImageUrls;
-      
+
     /**
      * 内容
-     */  
+     */
     @JsonProperty("Content")
-     @TableField(value="Content",updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Content", updateStrategy = FieldStrategy.IGNORED)
     private String Content;
-      
+
     /**
      * 浏览量
-     */  
+     */
     @JsonProperty("ViewCount")
-    @TableField(value="ViewCount",updateStrategy = FieldStrategy.ALWAYS)
-    private Integer ViewCount;          
-      
-  	  /**
+    @TableField(value = "ViewCount", updateStrategy = FieldStrategy.IGNORED)
+    private Integer ViewCount;
+
+    /**
      * 视频路径
-     */  
+     */
     @JsonProperty("VideoUrl")
-    @TableField(value="VideoUrl",updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "VideoUrl", updateStrategy = FieldStrategy.IGNORED)
     private String VideoUrl;
-      
+
     /**
      * 审核人
-     */  
+     */
     @JsonProperty("AuditUserId")
-    @TableField(value="AuditUserId",updateStrategy = FieldStrategy.ALWAYS)
-    private Integer AuditUserId;          
-      
+    @TableField(value = "AuditUserId", updateStrategy = FieldStrategy.IGNORED)
+    private Integer AuditUserId;
+
     /**
      * 发布人
-     */  
+     */
     @JsonProperty("PublishUserId")
-    @TableField(value="PublishUserId",updateStrategy = FieldStrategy.ALWAYS)
-    private Integer PublishUserId;          
-      
+    @TableField(value = "PublishUserId", updateStrategy = FieldStrategy.IGNORED)
+    private Integer PublishUserId;
+
     /**
      * 审核时间
-     */  
+     */
     @JsonProperty("AuditTime")
-    @TableField(value="AuditTime",updateStrategy = FieldStrategy.ALWAYS)
-    @JsonSerialize(using= LocalDateTimeSerializer.class)
-    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
-    private LocalDateTime AuditTime;             
-      
+    @TableField(value = "AuditTime", updateStrategy = FieldStrategy.IGNORED)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime AuditTime;
+
     /**
      * 审核状态
-     */  
+     */
     @JsonProperty("AuditStatus")
-    @TableField(value="AuditStatus",updateStrategy = FieldStrategy.ALWAYS)
-    private Integer AuditStatus;          
-  
+    @TableField(value = "AuditStatus", updateStrategy = FieldStrategy.IGNORED)
+    private Integer AuditStatus;
+
+    /**
+     * 审核回复
+     */
+    @JsonProperty("AuditReply")
+    @TableField(value = "AuditReply", updateStrategy = FieldStrategy.IGNORED)
+    private String AuditReply;
+
     /**
      * 把食谱实体转换成食谱传输模型
      */
     public RecipeDto MapToDto() throws InvocationTargetException, IllegalAccessException {
         RecipeDto RecipeDto = new RecipeDto();
-       
-        BeanUtils.copyProperties(RecipeDto,this);
-       
+
+        BeanUtils.copyProperties(RecipeDto, this);
+
         return RecipeDto;
     }
 

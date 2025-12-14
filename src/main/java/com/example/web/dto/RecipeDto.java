@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,108 +20,102 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 食谱类
  */
 @Data
-public class RecipeDto extends BaseDto
-{
+public class RecipeDto extends BaseDto {
 
-    
-     
     /**
      * 标题
-     */ 
+     */
     @JsonProperty("Title")
     private String Title;
-    
-     
+
     /**
      * 封面
-     */ 
+     */
     @JsonProperty("Cover")
     private String Cover;
-    
-     
+
     /**
      * 详细图
-     */ 
+     */
     @JsonProperty("ImageUrls")
     private String ImageUrls;
-    
-     
+
     /**
      * 内容
-     */ 
+     */
     @JsonProperty("Content")
     private String Content;
-    
-     
+
     /**
      * 浏览量
-     */ 
+     */
     @JsonProperty("ViewCount")
-    private Integer ViewCount;          
-    
-     
+    private Integer ViewCount;
+
     /**
      * 视频路径
-     */ 
+     */
     @JsonProperty("VideoUrl")
     private String VideoUrl;
-    
-     
+
     /**
      * 审核人
-     */ 
+     */
     @JsonProperty("AuditUserId")
-    private Integer AuditUserId;          
-    
-     
+    private Integer AuditUserId;
+
     /**
      * 发布人
-     */ 
+     */
     @JsonProperty("PublishUserId")
-    private Integer PublishUserId;          
-    
-     
+    private Integer PublishUserId;
+
     /**
      * 审核时间
-     */ 
-    @JsonSerialize(using= LocalDateTimeSerializer.class)
-    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
+     */
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("AuditTime")
-    private LocalDateTime AuditTime;             
-    
-     
+    private LocalDateTime AuditTime;
+
     /**
      * 审核状态
-     */ 
+     */
     @JsonProperty("AuditStatus")
-    private Integer AuditStatus;    
-    
+    private Integer AuditStatus;
+
     public String getAuditStatusFormat() {
         return AuditStatusEnum.GetEnum(AuditStatus).toString();
     }
-    
-    private String AuditStatusFormat;
-    
 
-     @JsonProperty("AuditUserDto") 
-    private AppUserDto AuditUserDto;                        
-   
-     @JsonProperty("PublishUserDto") 
-    private AppUserDto PublishUserDto;                        
-   
- 	 /**
+    private String AuditStatusFormat;
+
+    @JsonProperty("PublishUserDto")
+    private AppUserDto PublishUserDto;
+
+    @JsonProperty("AuditUserDto")
+    private AppUserDto AuditUserDto;
+
+    /**
+     * 审核回复
+     */
+    @JsonProperty("AuditReply")
+    private String AuditReply;
+
+    /**
      * 把食谱传输模型转换成食谱实体
      */
     public Recipe MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        Recipe Recipe= new Recipe();
-     
-         BeanUtils.copyProperties(Recipe,this);
-        
+        Recipe Recipe = new Recipe();
+
+        BeanUtils.copyProperties(Recipe, this);
+
         return Recipe;
     }
 

@@ -50,4 +50,9 @@ public class RecipePagedInput extends PagedInput {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private List<LocalDateTime> AuditTimeRange;
 
+    /**
+     * 内容模糊查询条件
+     */
+    @JsonProperty("Content")
+    private String Content;
 }

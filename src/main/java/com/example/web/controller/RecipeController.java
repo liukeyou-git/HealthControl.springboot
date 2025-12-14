@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 食谱控制器 
+ * 食谱控制器
  */
 @RestController()
 @RequestMapping("/Recipe")
 public class RecipeController {
-    @Autowired
-    private  RecipeService RecipeService;
-    @Autowired
+    @Autowired()
+    private RecipeService RecipeService;
+    @Autowired()
     private RecipeMapper RecipeMapper;
+
     /**
      * 食谱分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<RecipeDto> List(@RequestBody RecipePagedInput input)  {
+    public PagedResult<RecipeDto> List(@RequestBody RecipePagedInput input) {
         return RecipeService.List(input);
     }
-     /**
+
+    /**
      * 单个食谱查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class RecipeController {
 
         return RecipeService.Get(input);
     }
-  
+
     /**
      * 食谱创建或则修改
      */
@@ -60,12 +64,12 @@ public class RecipeController {
     public RecipeDto CreateOrEdit(@RequestBody RecipeDto input) throws Exception {
         return RecipeService.CreateOrEdit(input);
     }
+
     /**
      * 食谱删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         RecipeService.Delete(input);
     }
 
@@ -73,11 +77,24 @@ public class RecipeController {
      * 食谱批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         RecipeService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 食谱审核
+     */
+    @RequestMapping(value = "/Audit", method = RequestMethod.POST)
+    public void Audit(@RequestBody RecipeDto input) {
+        RecipeService.Audit(input);
+    }
+
+    /**
+     * 食谱浏览次数增加
+     */
+    @RequestMapping(value = "/AddViewCount", method = RequestMethod.POST)
+    public void AddViewCount(@RequestBody RecipeDto input) {
+        RecipeService.AddViewCount(input);
+    }
+
 }

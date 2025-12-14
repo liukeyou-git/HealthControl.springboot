@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class SportUnitServiceImpl extends ServiceImpl<SportUnitMapper, SportUnit> implements SportUnitService {
 
-	 /**
+    /**
      * 操作数据库AppUser表mapper对象
      */
     @Autowired
@@ -49,61 +49,61 @@ public class SportUnitServiceImpl extends ServiceImpl<SportUnitMapper, SportUnit
     @Autowired
     private SportUnitMapper SportUnitMapper;
     @Autowired
-    private SportMapper  SportMapper;                        
+    private SportMapper  SportMapper;
 
-  
-   /**
+
+    /**
      * 构建表查询sql
      */
     private LambdaQueryWrapper<SportUnit> BuilderQuery(SportUnitPagedInput input) {
-       //声明一个支持运动单位查询的(拉姆达)表达式
+        //声明一个支持运动单位查询的(拉姆达)表达式
         LambdaQueryWrapper<SportUnit> queryWrapper = Wrappers.<SportUnit>lambdaQuery()
                 .eq(input.getId() != null && input.getId() != 0, SportUnit::getId, input.getId());
-   //如果前端搜索传入查询条件则拼接查询条件
+        //如果前端搜索传入查询条件则拼接查询条件
         if (Extension.isNotNullOrEmpty(input.getUnitName())) {
-             queryWrapper = queryWrapper.like(SportUnit::getUnitName, input.getUnitName());
-       	 }
+            queryWrapper = queryWrapper.like(SportUnit::getUnitName, input.getUnitName());
+        }
 
         if (input.getSportId() != null) {
             queryWrapper = queryWrapper.eq(SportUnit::getSportId, input.getSportId());
-       	 }
-      
+        }
 
- 
- 
-     if(Extension.isNotNullOrEmpty(input.getKeyWord()))
+
+
+
+        if(Extension.isNotNullOrEmpty(input.getKeyWord()))
         {
-			queryWrapper=queryWrapper.and(i->i
-          	   .like(SportUnit::getUnitName,input.getKeyWord()).or()   	 
-        );
-                                       
- 		   }
-    
-      return queryWrapper;
+            queryWrapper=queryWrapper.and(i->i
+                    .like(SportUnit::getUnitName,input.getKeyWord()).or()
+            );
+
+        }
+
+        return queryWrapper;
     }
-  
+
     /**
      * 处理运动单位对于的外键数据
      */
-   private List<SportUnitDto> DispatchItem(List<SportUnitDto> items) throws InvocationTargetException, IllegalAccessException {
-          
-       for (SportUnitDto item : items) {           
-          	            
-           //查询出关联的Sport表信息           
+    private List<SportUnitDto> DispatchItem(List<SportUnitDto> items) throws InvocationTargetException, IllegalAccessException {
+
+        for (SportUnitDto item : items) {
+
+            //查询出关联的Sport表信息
             Sport  SportEntity= SportMapper.selectById(item.getSportId());
-            item.setSportDto(SportEntity!=null?SportEntity.MapToDto():new SportDto());              
-       }
-       
-     return items; 
-   }
-  
+            item.setSportDto(SportEntity!=null?SportEntity.MapToDto():new SportDto());
+        }
+
+        return items;
+    }
+
     /**
      * 运动单位分页查询
      */
     @SneakyThrows
     @Override
     public PagedResult<SportUnitDto> List(SportUnitPagedInput input) {
-			//构建where条件+排序
+        //构建where条件+排序
         LambdaQueryWrapper<SportUnit> queryWrapper = BuilderQuery(input);
         // 动态排序处理
         if (input.getSortItem() != null) {
@@ -117,32 +117,32 @@ public class SportUnitServiceImpl extends ServiceImpl<SportUnitMapper, SportUnit
 
         //构建一个分页查询的model
         Page<SportUnit> page = new Page<>(input.getPage(), input.getLimit());
-         //从数据库进行分页查询获取运动单位数据
+        //从数据库进行分页查询获取运动单位数据
         IPage<SportUnit> pageRecords= SportUnitMapper.selectPage(page, queryWrapper);
         //获取所有满足条件的数据行数
         Long totalCount= SportUnitMapper.selectCount(queryWrapper);
         //把SportUnit实体转换成SportUnit传输模型
         List<SportUnitDto> items= Extension.copyBeanList(pageRecords.getRecords(),SportUnitDto.class);
 
-		   DispatchItem(items);
+        DispatchItem(items);
         //返回一个分页结构给前端
         return PagedResult.GetInstance(items,totalCount);
 
     }
-  
+
     /**
      * 单个运动单位查询
      */
     @SneakyThrows
     @Override
     public SportUnitDto Get(SportUnitPagedInput input) {
-       if(input.getId()==null)
+        if(input.getId()==null)
         {
-         return new SportUnitDto();
+            return new SportUnitDto();
         }
-      
-       PagedResult<SportUnitDto> pagedResult = List(input);
-        return pagedResult.getItems().stream().findFirst().orElse(new SportUnitDto()); 
+
+        PagedResult<SportUnitDto> pagedResult = List(input);
+        return pagedResult.getItems().stream().findFirst().orElse(new SportUnitDto());
     }
 
     /**
@@ -152,7 +152,7 @@ public class SportUnitServiceImpl extends ServiceImpl<SportUnitMapper, SportUnit
     @Override
     public SportUnitDto CreateOrEdit(SportUnitDto input) {
         //声明一个运动单位实体
-        SportUnit SportUnit=input.MapToEntity();  
+        SportUnit SportUnit=input.MapToEntity();
         //调用数据库的增加或者修改方法
         saveOrUpdate(SportUnit);
         //把传输模型返回给前端

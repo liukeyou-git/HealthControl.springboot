@@ -17,7 +17,7 @@ import java.util.HashMap;
 @NoArgsConstructor
 @Data
 public class SportUnitPagedInput extends PagedInput {
-    
+
     /**
      * Id主键
      */
@@ -26,12 +26,12 @@ public class SportUnitPagedInput extends PagedInput {
     /**
      * 单位名称模糊查询条件
      */
-  	 @JsonProperty("UnitName")
+    @JsonProperty("UnitName")
     private String UnitName;
-     /**
+    /**
      * 运动
      */
-  	 @JsonProperty("SportId")
+    @JsonProperty("SportId")
     private Integer SportId;
 
 }

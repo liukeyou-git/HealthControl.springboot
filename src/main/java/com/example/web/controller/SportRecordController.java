@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 运动记录控制器 
+ * 运动记录控制器
  */
 @RestController()
 @RequestMapping("/SportRecord")
 public class SportRecordController {
-    @Autowired
-    private  SportRecordService SportRecordService;
-    @Autowired
+    @Autowired()
+    private SportRecordService SportRecordService;
+    @Autowired()
     private SportRecordMapper SportRecordMapper;
+
     /**
      * 运动记录分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<SportRecordDto> List(@RequestBody SportRecordPagedInput input)  {
+    public PagedResult<SportRecordDto> List(@RequestBody SportRecordPagedInput input) {
         return SportRecordService.List(input);
     }
-     /**
+
+    /**
      * 单个运动记录查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class SportRecordController {
 
         return SportRecordService.Get(input);
     }
-  
+
     /**
      * 运动记录创建或则修改
      */
@@ -60,12 +64,12 @@ public class SportRecordController {
     public SportRecordDto CreateOrEdit(@RequestBody SportRecordDto input) throws Exception {
         return SportRecordService.CreateOrEdit(input);
     }
+
     /**
      * 运动记录删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         SportRecordService.Delete(input);
     }
 
@@ -73,11 +77,16 @@ public class SportRecordController {
      * 运动记录批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         SportRecordService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 用户运动统计
+     */
+    @RequestMapping(value = "/SportRecordSummary", method = RequestMethod.POST)
+    public SportRecordSummaryDto SportRecordSummary(@RequestBody SportRecordPagedInput input) {
+        return SportRecordService.SportRecordSummary(input);
+    }
+
 }

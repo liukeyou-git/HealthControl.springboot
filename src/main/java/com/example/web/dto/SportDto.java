@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,43 +20,45 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 运动参考类
  */
 @Data
-public class SportDto extends BaseDto
-{
+public class SportDto extends BaseDto {
 
-    
-     
-    /**
-     * 介绍
-     */ 
-    @JsonProperty("Content")
-    private String Content;
-    
-     
     /**
      * 运动名称
-     */ 
+     */
     @JsonProperty("Name")
     private String Name;
-    
-     
+
     /**
      * 封面
-     */ 
+     */
     @JsonProperty("Cover")
     private String Cover;
 
- 	 /**
+    /**
+     * 介绍
+     */
+    @JsonProperty("Content")
+    private String Content;
+
+    /**
+     * 运动单位集合
+     */
+    @JsonProperty("SportUnits")
+    private List<SportUnitDto> SportUnits;
+
+    /**
      * 把运动参考传输模型转换成运动参考实体
      */
     public Sport MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        Sport Sport= new Sport();
-     
-         BeanUtils.copyProperties(Sport,this);
-        
+        Sport Sport = new Sport();
+
+        BeanUtils.copyProperties(Sport, this);
+
         return Sport;
     }
 

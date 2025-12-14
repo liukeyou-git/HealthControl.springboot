@@ -17,26 +17,26 @@ import java.util.HashMap;
 @NoArgsConstructor
 @Data
 public class SportRecordPagedInput extends PagedInput {
-    
+
     /**
      * Id主键
      */
     @JsonProperty("Id")
     private Integer Id;
-     /**
+    /**
      * 运动
      */
-  	 @JsonProperty("SportId")
+    @JsonProperty("SportId")
     private Integer SportId;
-     /**
+    /**
      * 运动单位
      */
-  	 @JsonProperty("SportUnitId")
+    @JsonProperty("SportUnitId")
     private Integer SportUnitId;
-     /**
+    /**
      * 记录人
      */
-  	 @JsonProperty("RecordUserId")
+    @JsonProperty("RecordUserId")
     private Integer RecordUserId;
     /**
      * 记录时间时间范围
@@ -44,5 +44,4 @@ public class SportRecordPagedInput extends PagedInput {
     @JsonProperty("RecordTimeRange")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private List<LocalDateTime> RecordTimeRange;
-
 }

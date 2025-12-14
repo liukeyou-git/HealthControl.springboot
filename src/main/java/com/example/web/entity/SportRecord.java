@@ -53,7 +53,7 @@ public class SportRecord extends BaseEntity {
      * 记录时间
      */  
     @JsonProperty("RecordTime")
-    @TableField(value="RecordTime",updateStrategy = FieldStrategy.ALWAYS)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     @JsonDeserialize(using= LocalDateTimeDeserializer.class)
     private LocalDateTime RecordTime;             

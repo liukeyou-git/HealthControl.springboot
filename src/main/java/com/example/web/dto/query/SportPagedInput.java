@@ -17,21 +17,27 @@ import java.util.HashMap;
 @NoArgsConstructor
 @Data
 public class SportPagedInput extends PagedInput {
-    
+
     /**
      * Id主键
      */
     @JsonProperty("Id")
     private Integer Id;
     /**
-     * 介绍模糊查询条件
-     */
-  	 @JsonProperty("Content")
-    private String Content;
-    /**
      * 运动名称模糊查询条件
      */
-  	 @JsonProperty("Name")
+    @JsonProperty("Name")
     private String Name;
+    /**
+     * 介绍模糊查询条件
+     */
+    @JsonProperty("Content")
+    private String Content;
+
+    /**
+     * 是否查询出运动单位集合
+     */
+    @JsonProperty("IsQuerySportUnits")
+    private Boolean IsQuerySportUnits;
 
 }

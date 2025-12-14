@@ -26,46 +26,46 @@ import java.util.HashMap;
 public class SportUnitDto extends BaseDto
 {
 
-    
-     
+
+
     /**
      * 运动
-     */ 
+     */
     @JsonProperty("SportId")
-    private Integer SportId;          
-    
-     
+    private Integer SportId;
+
+
     /**
      * 单位名称
-     */ 
+     */
     @JsonProperty("UnitName")
     private String UnitName;
-    
-     
+
+
     /**
      * 单位值
-     */ 
+     */
     @JsonProperty("UnitValue")
-    private Double UnitValue;      
-    
-     
+    private Double UnitValue;
+
+
     /**
      * 热量
-     */ 
+     */
     @JsonProperty("Calories")
-    private Double Calories;      
+    private Double Calories;
 
-     @JsonProperty("SportDto") 
-    private SportDto SportDto;                        
-   
- 	 /**
+    @JsonProperty("SportDto")
+    private SportDto SportDto;
+
+    /**
      * 把运动单位传输模型转换成运动单位实体
      */
     public SportUnit MapToEntity() throws InvocationTargetException, IllegalAccessException {
         SportUnit SportUnit= new SportUnit();
-     
-         BeanUtils.copyProperties(SportUnit,this);
-        
+
+        BeanUtils.copyProperties(SportUnit,this);
+
         return SportUnit;
     }
 

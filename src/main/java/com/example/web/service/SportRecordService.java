@@ -39,6 +39,7 @@ public interface SportRecordService extends IService<SportRecord> {
      * 运动记录批量删除
      */
     public void BatchDelete(IdsInput input);
-  
 
+
+    SportRecordSummaryDto SportRecordSummary(SportRecordPagedInput input);
 }

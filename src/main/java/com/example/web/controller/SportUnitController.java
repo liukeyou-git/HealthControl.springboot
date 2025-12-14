@@ -31,9 +31,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController()
 @RequestMapping("/SportUnit")
 public class SportUnitController {
-    @Autowired
+    @Autowired()
     private  SportUnitService SportUnitService;
-    @Autowired
+    @Autowired()
     private SportUnitMapper SportUnitMapper;
     /**
      * 运动单位分页查询
@@ -43,7 +43,7 @@ public class SportUnitController {
     public PagedResult<SportUnitDto> List(@RequestBody SportUnitPagedInput input)  {
         return SportUnitService.List(input);
     }
-     /**
+    /**
      * 单个运动单位查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +52,7 @@ public class SportUnitController {
 
         return SportUnitService.Get(input);
     }
-  
+
     /**
      * 运动单位创建或则修改
      */
@@ -77,7 +77,7 @@ public class SportUnitController {
     {
         SportUnitService.BatchDelete(input);
     }
-  
 
- 
+
+
 }

@@ -1,4 +1,5 @@
 package com.example.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,13 +33,14 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.web.bind.annotation.RequestParam;
+
 /**
  * 运动参考功能实现类
  */
 @Service
 public class SportServiceImpl extends ServiceImpl<SportMapper, Sport> implements SportService {
 
-	 /**
+    /**
      * 操作数据库AppUser表mapper对象
      */
     @Autowired
@@ -49,54 +51,62 @@ public class SportServiceImpl extends ServiceImpl<SportMapper, Sport> implements
     @Autowired
     private SportMapper SportMapper;
 
-  
-   /**
+    /**
+     * 操作数据库的SportUnit表mapper对象
+     */
+    @Autowired
+    private SportUnitMapper SportUnitMapper;
+
+    /**
      * 构建表查询sql
      */
     private LambdaQueryWrapper<Sport> BuilderQuery(SportPagedInput input) {
-       //声明一个支持运动参考查询的(拉姆达)表达式
+        // 声明一个支持运动参考查询的(拉姆达)表达式
         LambdaQueryWrapper<Sport> queryWrapper = Wrappers.<Sport>lambdaQuery()
                 .eq(input.getId() != null && input.getId() != 0, Sport::getId, input.getId());
-   //如果前端搜索传入查询条件则拼接查询条件
-        if (Extension.isNotNullOrEmpty(input.getContent())) {
-             queryWrapper = queryWrapper.like(Sport::getContent, input.getContent());
-       	 }
+        // 如果前端搜索传入查询条件则拼接查询条件
         if (Extension.isNotNullOrEmpty(input.getName())) {
-             queryWrapper = queryWrapper.like(Sport::getName, input.getName());
-       	 }
-      
+            queryWrapper = queryWrapper.like(Sport::getName, input.getName());
+        }
+        if (Extension.isNotNullOrEmpty(input.getContent())) {
+            queryWrapper = queryWrapper.like(Sport::getContent, input.getContent());
+        }
 
- 
- 
-     if(Extension.isNotNullOrEmpty(input.getKeyWord()))
-        {
-			queryWrapper=queryWrapper.and(i->i
-          	   .like(Sport::getContent,input.getKeyWord()).or()   	 
-          	   .like(Sport::getName,input.getKeyWord()).or()   	 
-        );
-                                       
- 		   }
-    
-      return queryWrapper;
+        if (Extension.isNotNullOrEmpty(input.getKeyWord())) {
+            queryWrapper = queryWrapper.and(i -> i
+                    .like(Sport::getName, input.getKeyWord()).or()
+                    .like(Sport::getContent, input.getKeyWord()).or());
+
+        }
+
+        return queryWrapper;
     }
-  
+
     /**
      * 处理运动参考对于的外键数据
      */
-   private List<SportDto> DispatchItem(List<SportDto> items) throws InvocationTargetException, IllegalAccessException {
-          
-       for (SportDto item : items) {       }
-       
-     return items; 
-   }
-  
+    private List<SportDto> DispatchItem(List<SportDto> items, Boolean IsQuerySportUnits)
+            throws InvocationTargetException, IllegalAccessException {
+
+        for (SportDto item : items) {
+            if (IsQuerySportUnits == Boolean.TRUE) {
+                // 查询其下对应的单位集合
+                List<SportUnit> sportUnits = SportUnitMapper
+                        .selectList(Wrappers.<SportUnit>lambdaQuery().eq(SportUnit::getSportId, item.getId()));
+                item.setSportUnits(Extension.copyBeanList(sportUnits, SportUnitDto.class));
+            }
+        }
+
+        return items;
+    }
+
     /**
      * 运动参考分页查询
      */
     @SneakyThrows
     @Override
     public PagedResult<SportDto> List(SportPagedInput input) {
-			//构建where条件+排序
+        // 构建where条件+排序
         LambdaQueryWrapper<Sport> queryWrapper = BuilderQuery(input);
         // 动态排序处理
         if (input.getSortItem() != null) {
@@ -108,49 +118,49 @@ public class SportServiceImpl extends ServiceImpl<SportMapper, Sport> implements
             queryWrapper = queryWrapper.orderByDesc(Sport::getCreationTime);
         }
 
-        //构建一个分页查询的model
+        // 构建一个分页查询的model
         Page<Sport> page = new Page<>(input.getPage(), input.getLimit());
-         //从数据库进行分页查询获取运动参考数据
-        IPage<Sport> pageRecords= SportMapper.selectPage(page, queryWrapper);
-        //获取所有满足条件的数据行数
-        Long totalCount= SportMapper.selectCount(queryWrapper);
-        //把Sport实体转换成Sport传输模型
-        List<SportDto> items= Extension.copyBeanList(pageRecords.getRecords(),SportDto.class);
+        // 从数据库进行分页查询获取运动参考数据
+        IPage<Sport> pageRecords = SportMapper.selectPage(page, queryWrapper);
+        // 获取所有满足条件的数据行数
+        Long totalCount = SportMapper.selectCount(queryWrapper);
+        // 把Sport实体转换成Sport传输模型
+        List<SportDto> items = Extension.copyBeanList(pageRecords.getRecords(), SportDto.class);
 
-		   DispatchItem(items);
-        //返回一个分页结构给前端
-        return PagedResult.GetInstance(items,totalCount);
+        DispatchItem(items, input.getIsQuerySportUnits());
+        // 返回一个分页结构给前端
+        return PagedResult.GetInstance(items, totalCount);
 
     }
-  
+
     /**
      * 单个运动参考查询
      */
     @SneakyThrows
     @Override
     public SportDto Get(SportPagedInput input) {
-       if(input.getId()==null)
-        {
-         return new SportDto();
+        if (input.getId() == null) {
+            return new SportDto();
         }
-      
-       PagedResult<SportDto> pagedResult = List(input);
-        return pagedResult.getItems().stream().findFirst().orElse(new SportDto()); 
+
+        PagedResult<SportDto> pagedResult = List(input);
+        return pagedResult.getItems().stream().findFirst().orElse(new SportDto());
     }
 
     /**
-     *运动参考创建或者修改
+     * 运动参考创建或者修改
      */
     @SneakyThrows
     @Override
     public SportDto CreateOrEdit(SportDto input) {
-        //声明一个运动参考实体
-        Sport Sport=input.MapToEntity();  
-        //调用数据库的增加或者修改方法
+        // 声明一个运动参考实体
+        Sport Sport = input.MapToEntity();
+        // 调用数据库的增加或者修改方法
         saveOrUpdate(Sport);
-        //把传输模型返回给前端
+        // 把传输模型返回给前端
         return Sport.MapToDto();
     }
+
     /**
      * 运动参考删除
      */

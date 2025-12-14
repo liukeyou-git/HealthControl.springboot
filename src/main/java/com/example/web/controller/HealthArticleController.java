@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 健康知识控制器 
+ * 健康知识控制器
  */
 @RestController()
 @RequestMapping("/HealthArticle")
 public class HealthArticleController {
-    @Autowired
-    private  HealthArticleService HealthArticleService;
-    @Autowired
+    @Autowired()
+    private HealthArticleService HealthArticleService;
+    @Autowired()
     private HealthArticleMapper HealthArticleMapper;
+
     /**
      * 健康知识分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<HealthArticleDto> List(@RequestBody HealthArticlePagedInput input)  {
+    public PagedResult<HealthArticleDto> List(@RequestBody HealthArticlePagedInput input) {
         return HealthArticleService.List(input);
     }
-     /**
+
+    /**
      * 单个健康知识查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class HealthArticleController {
 
         return HealthArticleService.Get(input);
     }
-  
+
     /**
      * 健康知识创建或则修改
      */
@@ -60,12 +64,12 @@ public class HealthArticleController {
     public HealthArticleDto CreateOrEdit(@RequestBody HealthArticleDto input) throws Exception {
         return HealthArticleService.CreateOrEdit(input);
     }
+
     /**
      * 健康知识删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         HealthArticleService.Delete(input);
     }
 
@@ -73,11 +77,24 @@ public class HealthArticleController {
      * 健康知识批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         HealthArticleService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 健康知识审核
+     */
+    @RequestMapping(value = "/Audit", method = RequestMethod.POST)
+    public void Audit(@RequestBody HealthArticleDto input) {
+        HealthArticleService.Audit(input);
+    }
+
+    /**
+     * 浏览次数增加
+     */
+    @RequestMapping(value = "/AddViewCount", method = RequestMethod.POST)
+    public void AddViewCount(@RequestBody HealthArticleDto input) {
+        HealthArticleService.AddViewCount(input);
+    }
+
 }

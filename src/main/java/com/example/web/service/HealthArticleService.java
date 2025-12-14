@@ -39,6 +39,9 @@ public interface HealthArticleService extends IService<HealthArticle> {
      * 健康知识批量删除
      */
     public void BatchDelete(IdsInput input);
-  
 
+
+    void Audit(HealthArticleDto input);
+
+    void AddViewCount(HealthArticleDto input);
 }

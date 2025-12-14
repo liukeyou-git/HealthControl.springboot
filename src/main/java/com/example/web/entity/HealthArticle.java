@@ -84,8 +84,15 @@ public class HealthArticle extends BaseEntity {
     @TableField(value="AuditTime",updateStrategy = FieldStrategy.ALWAYS)
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     @JsonDeserialize(using= LocalDateTimeDeserializer.class)
-    private LocalDateTime AuditTime;             
-      
+    private LocalDateTime AuditTime;
+
+    /**
+     * 审核回复
+     */
+    @JsonProperty("AuditReply")
+    @TableField(value="AuditReply",updateStrategy = FieldStrategy.ALWAYS)
+    private String AuditReply;
+
     /**
      * 审核人
      */  

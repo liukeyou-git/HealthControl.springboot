@@ -29,4 +29,10 @@ public class FoodTypePagedInput extends PagedInput {
   	 @JsonProperty("Name")
     private String Name;
 
+    /**
+     * 是否查询子级数据
+     */
+     @JsonProperty("IsQueryChild")
+    private Boolean IsQueryChild;
+
 }

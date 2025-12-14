@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,36 +20,40 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 食物类型类
  */
 @Data
-public class FoodTypeDto extends BaseDto
-{
+public class FoodTypeDto extends BaseDto {
 
-    
-     
     /**
      * 分类名称
-     */ 
+     */
     @JsonProperty("Name")
     private String Name;
-    
-     
+
     /**
      * 显示顺序
-     */ 
+     */
     @JsonProperty("Sort")
-    private Integer Sort;          
+    private Integer Sort;
 
- 	 /**
+    /**
+     * 食物集合
+     *
+     */
+    @JsonProperty("Foods")
+    private List<FoodDto> Foods;
+
+    /**
      * 把食物类型传输模型转换成食物类型实体
      */
     public FoodType MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        FoodType FoodType= new FoodType();
-     
-         BeanUtils.copyProperties(FoodType,this);
-        
+        FoodType FoodType = new FoodType();
+
+        BeanUtils.copyProperties(FoodType, this);
+
         return FoodType;
     }
 

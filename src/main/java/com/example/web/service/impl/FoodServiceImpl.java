@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements FoodService {
 
-	 /**
+    /**
      * 操作数据库AppUser表mapper对象
      */
     @Autowired
@@ -49,61 +49,61 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
     @Autowired
     private FoodMapper FoodMapper;
     @Autowired
-    private FoodTypeMapper  FoodTypeMapper;                        
+    private FoodTypeMapper  FoodTypeMapper;
 
-  
-   /**
+
+    /**
      * 构建表查询sql
      */
     private LambdaQueryWrapper<Food> BuilderQuery(FoodPagedInput input) {
-       //声明一个支持食物查询的(拉姆达)表达式
+        //声明一个支持食物查询的(拉姆达)表达式
         LambdaQueryWrapper<Food> queryWrapper = Wrappers.<Food>lambdaQuery()
                 .eq(input.getId() != null && input.getId() != 0, Food::getId, input.getId());
-   //如果前端搜索传入查询条件则拼接查询条件
+        //如果前端搜索传入查询条件则拼接查询条件
         if (Extension.isNotNullOrEmpty(input.getName())) {
-             queryWrapper = queryWrapper.like(Food::getName, input.getName());
-       	 }
+            queryWrapper = queryWrapper.like(Food::getName, input.getName());
+        }
 
         if (input.getFoodTypeId() != null) {
             queryWrapper = queryWrapper.eq(Food::getFoodTypeId, input.getFoodTypeId());
-       	 }
-      
+        }
 
- 
- 
-     if(Extension.isNotNullOrEmpty(input.getKeyWord()))
+
+
+
+        if(Extension.isNotNullOrEmpty(input.getKeyWord()))
         {
-			queryWrapper=queryWrapper.and(i->i
-          	   .like(Food::getName,input.getKeyWord()).or()   	 
-        );
-                                       
- 		   }
-    
-      return queryWrapper;
+            queryWrapper=queryWrapper.and(i->i
+                    .like(Food::getName,input.getKeyWord()).or()
+            );
+
+        }
+
+        return queryWrapper;
     }
-  
+
     /**
      * 处理食物对于的外键数据
      */
-   private List<FoodDto> DispatchItem(List<FoodDto> items) throws InvocationTargetException, IllegalAccessException {
-          
-       for (FoodDto item : items) {           
-          	            
-           //查询出关联的FoodType表信息           
+    private List<FoodDto> DispatchItem(List<FoodDto> items) throws InvocationTargetException, IllegalAccessException {
+
+        for (FoodDto item : items) {
+
+            //查询出关联的FoodType表信息
             FoodType  FoodTypeEntity= FoodTypeMapper.selectById(item.getFoodTypeId());
-            item.setFoodTypeDto(FoodTypeEntity!=null?FoodTypeEntity.MapToDto():new FoodTypeDto());              
-       }
-       
-     return items; 
-   }
-  
+            item.setFoodTypeDto(FoodTypeEntity!=null?FoodTypeEntity.MapToDto():new FoodTypeDto());
+        }
+
+        return items;
+    }
+
     /**
      * 食物分页查询
      */
     @SneakyThrows
     @Override
     public PagedResult<FoodDto> List(FoodPagedInput input) {
-			//构建where条件+排序
+        //构建where条件+排序
         LambdaQueryWrapper<Food> queryWrapper = BuilderQuery(input);
         // 动态排序处理
         if (input.getSortItem() != null) {
@@ -117,32 +117,32 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
 
         //构建一个分页查询的model
         Page<Food> page = new Page<>(input.getPage(), input.getLimit());
-         //从数据库进行分页查询获取食物数据
+        //从数据库进行分页查询获取食物数据
         IPage<Food> pageRecords= FoodMapper.selectPage(page, queryWrapper);
         //获取所有满足条件的数据行数
         Long totalCount= FoodMapper.selectCount(queryWrapper);
         //把Food实体转换成Food传输模型
         List<FoodDto> items= Extension.copyBeanList(pageRecords.getRecords(),FoodDto.class);
 
-		   DispatchItem(items);
+        DispatchItem(items);
         //返回一个分页结构给前端
         return PagedResult.GetInstance(items,totalCount);
 
     }
-  
+
     /**
      * 单个食物查询
      */
     @SneakyThrows
     @Override
     public FoodDto Get(FoodPagedInput input) {
-       if(input.getId()==null)
+        if(input.getId()==null)
         {
-         return new FoodDto();
+            return new FoodDto();
         }
-      
-       PagedResult<FoodDto> pagedResult = List(input);
-        return pagedResult.getItems().stream().findFirst().orElse(new FoodDto()); 
+
+        PagedResult<FoodDto> pagedResult = List(input);
+        return pagedResult.getItems().stream().findFirst().orElse(new FoodDto());
     }
 
     /**
@@ -152,7 +152,7 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
     @Override
     public FoodDto CreateOrEdit(FoodDto input) {
         //声明一个食物实体
-        Food Food=input.MapToEntity();  
+        Food Food=input.MapToEntity();
         //调用数据库的增加或者修改方法
         saveOrUpdate(Food);
         //把传输模型返回给前端

@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,74 +20,72 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 食物类
  */
 @Data
-public class FoodDto extends BaseDto
-{
+public class FoodDto extends BaseDto {
 
-    
-     
     /**
      * 食物名称
-     */ 
+     */
     @JsonProperty("Name")
     private String Name;
-    
-     
+
     /**
      * 封面
-     */ 
+     */
     @JsonProperty("Cover")
     private String Cover;
-    
-     
+
     /**
      * 食物类型
-     */ 
+     */
     @JsonProperty("FoodTypeId")
-    private Integer FoodTypeId;          
-    
-     
+    private Integer FoodTypeId;
+
     /**
      * 热量
-     */ 
+     */
     @JsonProperty("Calories")
-    private Double Calories;      
-    
-     
+    private Double Calories;
+
     /**
      * 蛋白质
-     */ 
+     */
     @JsonProperty("Protein")
-    private Double Protein;      
-    
-     
+    private Double Protein;
+
     /**
      * 糖水化合物
-     */ 
+     */
     @JsonProperty("Carbohydrates")
-    private Double Carbohydrates;      
-    
-     
+    private Double Carbohydrates;
+
     /**
      * 脂肪
-     */ 
+     */
     @JsonProperty("Fat")
-    private Double Fat;      
+    private Double Fat;
 
-     @JsonProperty("FoodTypeDto") 
-    private FoodTypeDto FoodTypeDto;                        
-   
- 	 /**
+    @JsonProperty("FoodTypeDto")
+    private FoodTypeDto FoodTypeDto;
+
+    /**
+     * 单位集合
+     */
+    @JsonProperty("FoodUnits")
+    private List<FoodUnitDto> FoodUnits;
+
+    /**
      * 把食物传输模型转换成食物实体
      */
     public Food MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        Food Food= new Food();
-     
-         BeanUtils.copyProperties(Food,this);
-        
+        Food Food = new Food();
+
+        BeanUtils.copyProperties(Food, this);
+
         return Food;
     }
 

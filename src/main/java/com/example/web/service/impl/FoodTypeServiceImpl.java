@@ -1,4 +1,5 @@
 package com.example.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,13 +33,14 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.web.bind.annotation.RequestParam;
+
 /**
  * 食物类型功能实现类
  */
 @Service
 public class FoodTypeServiceImpl extends ServiceImpl<FoodTypeMapper, FoodType> implements FoodTypeService {
 
-	 /**
+    /**
      * 操作数据库AppUser表mapper对象
      */
     @Autowired
@@ -49,50 +51,86 @@ public class FoodTypeServiceImpl extends ServiceImpl<FoodTypeMapper, FoodType> i
     @Autowired
     private FoodTypeMapper FoodTypeMapper;
 
-  
-   /**
+    /**
+     * 操作数据库的Food表mapper对象
+     */
+    @Autowired
+    private FoodMapper FoodMapper;
+
+    /**
+     * 操作数据库的FoodUnit表mapper对象
+     */
+    @Autowired
+    private FoodUnitMapper FoodUnitMapper;
+
+    /**
      * 构建表查询sql
      */
     private LambdaQueryWrapper<FoodType> BuilderQuery(FoodTypePagedInput input) {
-       //声明一个支持食物类型查询的(拉姆达)表达式
+        // 声明一个支持食物类型查询的(拉姆达)表达式
         LambdaQueryWrapper<FoodType> queryWrapper = Wrappers.<FoodType>lambdaQuery()
                 .eq(input.getId() != null && input.getId() != 0, FoodType::getId, input.getId());
-   //如果前端搜索传入查询条件则拼接查询条件
+        // 如果前端搜索传入查询条件则拼接查询条件
         if (Extension.isNotNullOrEmpty(input.getName())) {
-             queryWrapper = queryWrapper.like(FoodType::getName, input.getName());
-       	 }
-      
+            queryWrapper = queryWrapper.like(FoodType::getName, input.getName());
+        }
 
- 
- 
-     if(Extension.isNotNullOrEmpty(input.getKeyWord()))
-        {
-			queryWrapper=queryWrapper.and(i->i
-          	   .like(FoodType::getName,input.getKeyWord()).or()   	 
-        );
-                                       
- 		   }
-    
-      return queryWrapper;
+        if (Extension.isNotNullOrEmpty(input.getKeyWord())) {
+            queryWrapper = queryWrapper.and(i -> i
+                    .like(FoodType::getName, input.getKeyWord()).or());
+
+        }
+
+        return queryWrapper;
     }
-  
+
     /**
      * 处理食物类型对于的外键数据
      */
-   private List<FoodTypeDto> DispatchItem(List<FoodTypeDto> items) throws InvocationTargetException, IllegalAccessException {
-          
-       for (FoodTypeDto item : items) {       }
-       
-     return items; 
-   }
-  
+    private List<FoodTypeDto> DispatchItem(List<FoodTypeDto> items, Boolean isQueryChild)
+            throws InvocationTargetException, IllegalAccessException {
+
+        for (FoodTypeDto item : items) {
+
+            if (isQueryChild==Boolean.TRUE) {
+                // 查询食物集合
+                List<Food> foods = FoodMapper
+                        .selectList(Wrappers.<Food>lambdaQuery().eq(Food::getFoodTypeId, item.getId()));
+                // 把食物集合转换成食物传输模型
+                List<FoodDto> foodDtos = Extension.copyBeanList(foods, FoodDto.class);
+                // 设置食物集合
+                item.setFoods(foodDtos);
+
+                for (FoodDto foodDto : foodDtos) {
+                    // 查询单位集合
+                    List<FoodUnit> foodUnits = FoodUnitMapper
+                            .selectList(Wrappers.<FoodUnit>lambdaQuery().eq(FoodUnit::getFoodId, foodDto.getId()));
+                    // 把单位集合转换成单位传输模型
+                    List<FoodUnitDto> foodUnitDtos = Extension.copyBeanList(foodUnits, FoodUnitDto.class);
+                    for (FoodUnitDto foodUnitDto : foodUnitDtos) {
+                        foodUnitDto.setProtein(Extension.ToFixed4(foodDto.getProtein() * foodUnitDto.getUnitValue()));
+                        foodUnitDto.setCarbohydrates(
+                                Extension.ToFixed4(foodDto.getCarbohydrates() * foodUnitDto.getUnitValue()));
+                        foodUnitDto.setFat(Extension.ToFixed4(foodDto.getFat() * foodUnitDto.getUnitValue()));
+                        foodUnitDto.setCalories(Extension.ToFixed4(foodDto.getCalories() * foodUnitDto.getUnitValue()));
+
+                    }
+
+                    foodDto.setFoodUnits(foodUnitDtos);
+                }
+            }
+        }
+
+        return items;
+    }
+
     /**
      * 食物类型分页查询
      */
     @SneakyThrows
     @Override
     public PagedResult<FoodTypeDto> List(FoodTypePagedInput input) {
-			//构建where条件+排序
+        // 构建where条件+排序
         LambdaQueryWrapper<FoodType> queryWrapper = BuilderQuery(input);
         // 动态排序处理
         if (input.getSortItem() != null) {
@@ -101,52 +139,52 @@ public class FoodTypeServiceImpl extends ServiceImpl<FoodTypeMapper, FoodType> i
                     + (input.getSortItem().getIsAsc() ? " ASC" : " DESC"));
         } else {
             // 默认按创建时间从大到小排序
-            queryWrapper = queryWrapper.orderByDesc(FoodType::getCreationTime);
+            queryWrapper = queryWrapper.orderByDesc(FoodType::getSort);
         }
 
-        //构建一个分页查询的model
+        // 构建一个分页查询的model
         Page<FoodType> page = new Page<>(input.getPage(), input.getLimit());
-         //从数据库进行分页查询获取食物类型数据
-        IPage<FoodType> pageRecords= FoodTypeMapper.selectPage(page, queryWrapper);
-        //获取所有满足条件的数据行数
-        Long totalCount= FoodTypeMapper.selectCount(queryWrapper);
-        //把FoodType实体转换成FoodType传输模型
-        List<FoodTypeDto> items= Extension.copyBeanList(pageRecords.getRecords(),FoodTypeDto.class);
+        // 从数据库进行分页查询获取食物类型数据
+        IPage<FoodType> pageRecords = FoodTypeMapper.selectPage(page, queryWrapper);
+        // 获取所有满足条件的数据行数
+        Long totalCount = FoodTypeMapper.selectCount(queryWrapper);
+        // 把FoodType实体转换成FoodType传输模型
+        List<FoodTypeDto> items = Extension.copyBeanList(pageRecords.getRecords(), FoodTypeDto.class);
 
-		   DispatchItem(items);
-        //返回一个分页结构给前端
-        return PagedResult.GetInstance(items,totalCount);
+        DispatchItem(items, input.getIsQueryChild());
+        // 返回一个分页结构给前端
+        return PagedResult.GetInstance(items, totalCount);
 
     }
-  
+
     /**
      * 单个食物类型查询
      */
     @SneakyThrows
     @Override
     public FoodTypeDto Get(FoodTypePagedInput input) {
-       if(input.getId()==null)
-        {
-         return new FoodTypeDto();
+        if (input.getId() == null) {
+            return new FoodTypeDto();
         }
-      
-       PagedResult<FoodTypeDto> pagedResult = List(input);
-        return pagedResult.getItems().stream().findFirst().orElse(new FoodTypeDto()); 
+
+        PagedResult<FoodTypeDto> pagedResult = List(input);
+        return pagedResult.getItems().stream().findFirst().orElse(new FoodTypeDto());
     }
 
     /**
-     *食物类型创建或者修改
+     * 食物类型创建或者修改
      */
     @SneakyThrows
     @Override
     public FoodTypeDto CreateOrEdit(FoodTypeDto input) {
-        //声明一个食物类型实体
-        FoodType FoodType=input.MapToEntity();  
-        //调用数据库的增加或者修改方法
+        // 声明一个食物类型实体
+        FoodType FoodType = input.MapToEntity();
+        // 调用数据库的增加或者修改方法
         saveOrUpdate(FoodType);
-        //把传输模型返回给前端
+        // 把传输模型返回给前端
         return FoodType.MapToDto();
     }
+
     /**
      * 食物类型删除
      */

@@ -31,9 +31,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController()
 @RequestMapping("/FoodType")
 public class FoodTypeController {
-    @Autowired
+    @Autowired()
     private  FoodTypeService FoodTypeService;
-    @Autowired
+    @Autowired()
     private FoodTypeMapper FoodTypeMapper;
     /**
      * 食物类型分页查询
@@ -43,7 +43,7 @@ public class FoodTypeController {
     public PagedResult<FoodTypeDto> List(@RequestBody FoodTypePagedInput input)  {
         return FoodTypeService.List(input);
     }
-     /**
+    /**
      * 单个食物类型查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +52,7 @@ public class FoodTypeController {
 
         return FoodTypeService.Get(input);
     }
-  
+
     /**
      * 食物类型创建或则修改
      */
@@ -77,7 +77,7 @@ public class FoodTypeController {
     {
         FoodTypeService.BatchDelete(input);
     }
-  
 
- 
+
+
 }

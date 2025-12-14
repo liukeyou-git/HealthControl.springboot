@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,46 +20,66 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 食物单位类
  */
 @Data
-public class FoodUnitDto extends BaseDto
-{
+public class FoodUnitDto extends BaseDto {
 
-    
-     
     /**
      * 食物
-     */ 
+     */
     @JsonProperty("FoodId")
-    private Integer FoodId;          
-    
-     
+    private Integer FoodId;
+
     /**
      * 单位名称
-     */ 
+     */
     @JsonProperty("UnitName")
     private String UnitName;
-    
-     
+
     /**
      * 单位值
-     */ 
+     */
     @JsonProperty("UnitValue")
-    private Integer UnitValue;          
+    private Integer UnitValue;
 
-     @JsonProperty("FoodDto") 
-    private FoodDto FoodDto;                        
-   
- 	 /**
+    @JsonProperty("FoodDto")
+    private FoodDto FoodDto;
+
+    /**
+     * 热量
+     */
+    @JsonProperty("Calories")
+    private Double Calories;
+
+    /**
+     * 蛋白质
+     */
+    @JsonProperty("Protein")
+    private Double Protein;
+
+    /**
+     * 糖水化合物
+     */
+    @JsonProperty("Carbohydrates")
+    private Double Carbohydrates;
+
+    /**
+     * 脂肪
+     */
+    @JsonProperty("Fat")
+    private Double Fat;
+
+    /**
      * 把食物单位传输模型转换成食物单位实体
      */
     public FoodUnit MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        FoodUnit FoodUnit= new FoodUnit();
-     
-         BeanUtils.copyProperties(FoodUnit,this);
-        
+        FoodUnit FoodUnit = new FoodUnit();
+
+        BeanUtils.copyProperties(FoodUnit, this);
+
         return FoodUnit;
     }
 

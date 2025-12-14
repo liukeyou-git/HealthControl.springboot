@@ -1,4 +1,5 @@
 package com.example.web.controller;
+
 import com.example.web.SysConst;
 import com.example.web.dto.*;
 import com.example.web.dto.query.*;
@@ -25,25 +26,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * 饮食记录控制器 
+ * 饮食记录控制器
  */
 @RestController()
 @RequestMapping("/DietRecord")
 public class DietRecordController {
-    @Autowired
-    private  DietRecordService DietRecordService;
-    @Autowired
+    @Autowired()
+    private DietRecordService DietRecordService;
+    @Autowired()
     private DietRecordMapper DietRecordMapper;
+
     /**
      * 饮食记录分页查询
      */
     @RequestMapping(value = "/List", method = RequestMethod.POST)
     @SneakyThrows
-    public PagedResult<DietRecordDto> List(@RequestBody DietRecordPagedInput input)  {
+    public PagedResult<DietRecordDto> List(@RequestBody DietRecordPagedInput input) {
         return DietRecordService.List(input);
     }
-     /**
+
+    /**
      * 单个饮食记录查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +56,7 @@ public class DietRecordController {
 
         return DietRecordService.Get(input);
     }
-  
+
     /**
      * 饮食记录创建或则修改
      */
@@ -60,12 +64,12 @@ public class DietRecordController {
     public DietRecordDto CreateOrEdit(@RequestBody DietRecordDto input) throws Exception {
         return DietRecordService.CreateOrEdit(input);
     }
+
     /**
      * 饮食记录删除
      */
     @RequestMapping(value = "/Delete", method = RequestMethod.POST)
-    public void Delete(@RequestBody IdInput input)
-    {
+    public void Delete(@RequestBody IdInput input) {
         DietRecordService.Delete(input);
     }
 
@@ -73,11 +77,24 @@ public class DietRecordController {
      * 饮食记录批量删除
      */
     @RequestMapping(value = "/BatchDelete", method = RequestMethod.POST)
-    public void BatchDelete(@RequestBody IdsInput input)
-    {
+    public void BatchDelete(@RequestBody IdsInput input) {
         DietRecordService.BatchDelete(input);
     }
-  
 
- 
+    /**
+     * 按早中晚来显示我的记录
+     */
+    @RequestMapping(value = "/DietRecordByDay", method = RequestMethod.POST)
+    public List<DietRecordByDayDto> DietRecordByDay(@RequestBody DietRecordPagedInput input) {
+        return DietRecordService.DietRecordByDay(input);
+    }
+
+    /**
+     * 按天来汇总我的摄入信息
+     */
+    @RequestMapping(value = "/DietRecordByDaySummary", method = RequestMethod.POST)
+    public List<DietRecordByDaySummaryDto> DietRecordByDaySummary(@RequestBody DietRecordPagedInput input) {
+        return DietRecordService.DietRecordByDaySummary(input);
+    }
+
 }

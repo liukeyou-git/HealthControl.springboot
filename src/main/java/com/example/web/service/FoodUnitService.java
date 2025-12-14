@@ -26,11 +26,11 @@ public interface FoodUnitService extends IService<FoodUnit> {
      */
     public FoodUnitDto CreateOrEdit(FoodUnitDto input);
 
-     /**
+    /**
      * 获取食物单位信息
      */
     public FoodUnitDto Get(FoodUnitPagedInput input);
- 	 /**
+    /**
      * 食物单位删除
      */
     public void Delete(IdInput input);
@@ -39,6 +39,6 @@ public interface FoodUnitService extends IService<FoodUnit> {
      * 食物单位批量删除
      */
     public void BatchDelete(IdsInput input);
-  
+
 
 }

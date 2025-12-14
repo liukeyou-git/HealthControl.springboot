@@ -26,11 +26,11 @@ public interface FoodTypeService extends IService<FoodType> {
      */
     public FoodTypeDto CreateOrEdit(FoodTypeDto input);
 
-     /**
+    /**
      * 获取食物类型信息
      */
     public FoodTypeDto Get(FoodTypePagedInput input);
- 	 /**
+    /**
      * 食物类型删除
      */
     public void Delete(IdInput input);
@@ -39,6 +39,6 @@ public interface FoodTypeService extends IService<FoodType> {
      * 食物类型批量删除
      */
     public void BatchDelete(IdsInput input);
-  
+
 
 }

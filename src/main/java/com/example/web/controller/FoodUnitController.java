@@ -31,9 +31,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController()
 @RequestMapping("/FoodUnit")
 public class FoodUnitController {
-    @Autowired
+    @Autowired()
     private  FoodUnitService FoodUnitService;
-    @Autowired
+    @Autowired()
     private FoodUnitMapper FoodUnitMapper;
     /**
      * 食物单位分页查询
@@ -43,7 +43,7 @@ public class FoodUnitController {
     public PagedResult<FoodUnitDto> List(@RequestBody FoodUnitPagedInput input)  {
         return FoodUnitService.List(input);
     }
-     /**
+    /**
      * 单个食物单位查询接口
      */
     @RequestMapping(value = "/Get", method = RequestMethod.POST)
@@ -52,7 +52,7 @@ public class FoodUnitController {
 
         return FoodUnitService.Get(input);
     }
-  
+
     /**
      * 食物单位创建或则修改
      */
@@ -77,7 +77,7 @@ public class FoodUnitController {
     {
         FoodUnitService.BatchDelete(input);
     }
-  
 
- 
+
+
 }

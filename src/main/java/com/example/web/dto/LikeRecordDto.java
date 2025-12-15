@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,46 +20,49 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 点赞记录类
  */
 @Data
-public class LikeRecordDto extends BaseDto
-{
+public class LikeRecordDto extends BaseDto {
 
-    
-     
     /**
      * 点赞人
-     */ 
+     */
     @JsonProperty("LikeUserId")
-    private Integer LikeUserId;          
-    
-     
+    private Integer LikeUserId;
+
     /**
      * 点赞类型
-     */ 
+     */
     @JsonProperty("LikeType")
     private String LikeType;
-    
-     
+
     /**
-     * 关联
-     */ 
+     * 关联Id
+     */
     @JsonProperty("RelativeId")
     private String RelativeId;
 
-     @JsonProperty("LikeUserDto") 
-    private AppUserDto LikeUserDto;                        
-   
- 	 /**
+    @JsonProperty("LikeUserDto")
+
+    private AppUserDto LikeUserDto;
+
+    @JsonProperty("HealthArticleDto")
+    private HealthArticleDto HealthArticleDto;
+
+    @JsonProperty("RecipeDto")
+    private RecipeDto RecipeDto;
+
+    /**
      * 把点赞记录传输模型转换成点赞记录实体
      */
     public LikeRecord MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        LikeRecord LikeRecord= new LikeRecord();
-     
-         BeanUtils.copyProperties(LikeRecord,this);
-        
+        LikeRecord LikeRecord = new LikeRecord();
+
+        BeanUtils.copyProperties(LikeRecord, this);
+
         return LikeRecord;
     }
 

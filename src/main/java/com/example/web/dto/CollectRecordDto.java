@@ -1,4 +1,5 @@
 package com.example.web.dto;
+
 import com.example.web.enums.*;
 import com.example.web.tools.dto.BaseDto;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,46 +20,48 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+
 /**
  * 收藏记录类
  */
 @Data
-public class CollectRecordDto extends BaseDto
-{
+public class CollectRecordDto extends BaseDto {
 
-    
-     
     /**
      * 收藏人
-     */ 
+     */
     @JsonProperty("CollectUserId")
-    private Integer CollectUserId;          
-    
-     
+    private Integer CollectUserId;
+
     /**
      * 收藏类型
-     */ 
+     */
     @JsonProperty("CollectType")
     private String CollectType;
-    
-     
-    /**
-     * 关联资源
-     */ 
-    @JsonProperty("RelativeId")
-    private Integer RelativeId;          
 
-     @JsonProperty("CollectUserDto") 
-    private AppUserDto CollectUserDto;                        
-   
- 	 /**
+    /**
+     * 关联资源Id
+     */
+    @JsonProperty("RelativeId")
+    private Integer RelativeId;
+
+    @JsonProperty("CollectUserDto")
+    private AppUserDto CollectUserDto;
+
+    @JsonProperty("HealthArticleDto")
+    private HealthArticleDto HealthArticleDto;
+
+    @JsonProperty("RecipeDto")
+    private RecipeDto RecipeDto;
+
+    /**
      * 把收藏记录传输模型转换成收藏记录实体
      */
     public CollectRecord MapToEntity() throws InvocationTargetException, IllegalAccessException {
-        CollectRecord CollectRecord= new CollectRecord();
-     
-         BeanUtils.copyProperties(CollectRecord,this);
-        
+        CollectRecord CollectRecord = new CollectRecord();
+
+        BeanUtils.copyProperties(CollectRecord, this);
+
         return CollectRecord;
     }
 

@@ -34,4 +34,6 @@ public class CollectRecordPagedInput extends PagedInput {
   	 @JsonProperty("CollectUserId")
     private Integer CollectUserId;
 
+     @JsonProperty("RelativeId")
+    private Integer RelativeId;
 }

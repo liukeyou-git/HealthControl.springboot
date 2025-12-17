@@ -105,6 +105,12 @@ public class HealthArticleDto extends BaseDto {
     private String AuditReply;
 
     /**
+     * 相似度
+     */
+    @JsonProperty("Similarity")
+    private Double Similarity;
+
+    /**
      * 把健康知识传输模型转换成健康知识实体
      */
     public HealthArticle MapToEntity() throws InvocationTargetException, IllegalAccessException {

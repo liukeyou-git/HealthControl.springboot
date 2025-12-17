@@ -97,4 +97,11 @@ public class RecipeController {
         RecipeService.AddViewCount(input);
     }
 
+    /**
+     * 推荐算法(基于行为+权重的协同过滤算法)
+     */
+    @RequestMapping(value = "/RecommendList", method = RequestMethod.POST)
+    public List<RecipeDto> RecommendList(@RequestBody RecipePagedInput input) {
+        return RecipeService.RecommendList(input);
+    }
 }

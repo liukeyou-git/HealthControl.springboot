@@ -53,4 +53,9 @@ public interface RecipeService extends IService<Recipe> {
      * 食谱浏览次数增加
      */
     public void AddViewCount(RecipeDto input);
+
+    /**
+     * 推荐算法(基于行为+权重的协同过滤算法)
+     */
+    public List<RecipeDto> RecommendList(RecipePagedInput input);
 }

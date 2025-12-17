@@ -109,6 +109,12 @@ public class RecipeDto extends BaseDto {
     private String AuditReply;
 
     /**
+     * 相似度
+     */
+    @JsonProperty("Similarity")
+    private Double Similarity;
+
+    /**
      * 把食谱传输模型转换成食谱实体
      */
     public Recipe MapToEntity() throws InvocationTargetException, IllegalAccessException {

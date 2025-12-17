@@ -97,4 +97,14 @@ public class HealthArticleController {
         HealthArticleService.AddViewCount(input);
     }
 
+    /**
+     * 健康知识推荐接口
+     * 支持基于内容的推荐（未登录用户）和基于用户协同过滤的推荐（已登录用户）
+     */
+    @RequestMapping(value = "/RecommendList", method = RequestMethod.POST)
+    @SneakyThrows
+    public List<HealthArticleDto> RecommendList(@RequestBody HealthArticlePagedInput input) {
+        return HealthArticleService.RecommendList(input);
+    }
+
 }

@@ -1,0 +1,5 @@
+# Maven 构建产物
+target/
+# IDE 配置（可选，根据你的编辑器补充）
+.idea/
+*.iml

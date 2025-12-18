@@ -88,4 +88,12 @@ public class HealthIndicatorRecordController {
     public void BatchAdd(@RequestBody List<HealthIndicatorRecordDto> input) {
         HealthIndicatorRecordService.BatchAdd(input);
     }
+
+    /**
+     * 今日指标记录
+     */
+    @RequestMapping(value = "/TodayRecordList", method = RequestMethod.POST)
+    public List<TodayHealthIndicatorRecordDto> TodayRecordList(@RequestBody HealthIndicatorRecordPagedInput input) {
+        return HealthIndicatorRecordService.TodayRecordList(input);
+    }
 }

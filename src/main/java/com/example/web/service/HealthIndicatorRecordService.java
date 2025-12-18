@@ -49,4 +49,8 @@ public interface HealthIndicatorRecordService extends IService<HealthIndicatorRe
      */
     public void BatchAdd(List<HealthIndicatorRecordDto> input);
 
+    /**
+     * 今日指标记录
+     */
+    public List<TodayHealthIndicatorRecordDto> TodayRecordList(HealthIndicatorRecordPagedInput input);
 }

@@ -1,6 +1,7 @@
 package com.example.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +27,8 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import com.example.web.tools.*;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
@@ -215,4 +218,66 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
             CreateOrEdit(item);
         }
     }
+
+    /**
+     * 今日指标记录
+     */
+
+    @Override
+    @SneakyThrows
+    public List<TodayHealthIndicatorRecordDto> TodayRecordList(HealthIndicatorRecordPagedInput input) {
+        LocalDateTime beginTime = LocalDate.now().atTime(0, 0, 0);
+        LocalDateTime endTime = LocalDate.now().atTime(23, 59, 59);
+        // 查询当前的用户
+        AppUser user = AppUserMapper.selectById(input.getRecordUserId());
+        // 根据指标进行排序并且只回去最新的一条记录
+        QueryWrapper<HealthIndicatorRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.inSql("Id",
+                "SELECT MAX(Id) FROM HealthIndicatorRecord " +
+                        "WHERE RecordUserId = " + input.getRecordUserId() +
+                        " AND RecordTime >= '" + beginTime + "'" +
+                        " AND RecordTime <= '" + endTime + "'" +
+                        " GROUP BY HealthIndicatorId"
+        );
+        queryWrapper.orderByDesc("RecordTime");
+
+        List<HealthIndicatorRecord> record = HealthIndicatorRecordMapper.selectList(queryWrapper);
+
+        List<TodayHealthIndicatorRecordDto> todayHealthIndicatorRecordDtoList = new ArrayList<>();
+        // 根据指标进行groupby
+        for (HealthIndicatorRecord item : record) {
+            TodayHealthIndicatorRecordDto todayHealthIndicatorRecordDto = new TodayHealthIndicatorRecordDto();
+            todayHealthIndicatorRecordDto.setHealthIndicatorTypeId(item.getHealthIndicatorTypeId());
+            todayHealthIndicatorRecordDto.setRecordUserId(item.getRecordUserId());
+            todayHealthIndicatorRecordDto.setRecordTime(item.getRecordTime());
+            todayHealthIndicatorRecordDto.setRecordValue(item.getRecordValue());
+            todayHealthIndicatorRecordDto.setIsAbnormity(item.getIsAbnormity());
+            todayHealthIndicatorRecordDto.setLastRecordValue(item.getRecordValue());
+            // 查询出关联的HealthIndicator表信息
+            HealthIndicator HealthIndicatorEntity = HealthIndicatorMapper.selectById(item.getHealthIndicatorId());
+            todayHealthIndicatorRecordDto.setHealthIndicatorDto(
+                    HealthIndicatorEntity != null ? HealthIndicatorEntity.MapToDto() : new HealthIndicatorDto());
+
+            // 查询出关联的HealthIndicatorType表信息
+            HealthIndicatorType HealthIndicatorTypeEntity = HealthIndicatorTypeMapper
+                    .selectById(item.getHealthIndicatorTypeId());
+            todayHealthIndicatorRecordDto
+                    .setHealthIndicatorTypeDto(HealthIndicatorTypeEntity != null ? HealthIndicatorTypeEntity.MapToDto()
+                            : new HealthIndicatorTypeDto());
+
+            // 得到当前指标上一个记录
+            HealthIndicatorRecord lastRecord = HealthIndicatorRecordMapper
+                    .selectOne(Wrappers.<HealthIndicatorRecord>lambdaQuery()
+                            .ne(HealthIndicatorRecord::getId, item.getId())
+                            .eq(HealthIndicatorRecord::getHealthIndicatorId, item.getHealthIndicatorId())
+                            .eq(HealthIndicatorRecord::getRecordUserId, input.getRecordUserId())
+                            .orderByDesc(HealthIndicatorRecord::getRecordTime).last("LIMIT 1"));
+            todayHealthIndicatorRecordDto.setLastRecordValue(lastRecord != null ? lastRecord.getRecordValue() : 0);
+
+            todayHealthIndicatorRecordDtoList.add(todayHealthIndicatorRecordDto);
+
+        }
+        return todayHealthIndicatorRecordDtoList;
+    }
+
 }

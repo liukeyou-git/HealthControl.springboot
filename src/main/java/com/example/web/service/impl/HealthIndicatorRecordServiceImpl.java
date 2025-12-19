@@ -1,7 +1,6 @@
 package com.example.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.SneakyThrows;
 import java.io.IOException;
 import com.example.web.tools.*;
@@ -230,18 +230,22 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
         LocalDateTime endTime = LocalDate.now().atTime(23, 59, 59);
         // 查询当前的用户
         AppUser user = AppUserMapper.selectById(input.getRecordUserId());
-        // 根据指标进行排序并且只回去最新的一条记录
-        QueryWrapper<HealthIndicatorRecord> queryWrapper = new QueryWrapper<>();
-        queryWrapper.inSql("Id",
-                "SELECT MAX(Id) FROM HealthIndicatorRecord " +
-                        "WHERE RecordUserId = " + input.getRecordUserId() +
-                        " AND RecordTime >= '" + beginTime + "'" +
-                        " AND RecordTime <= '" + endTime + "'" +
-                        " GROUP BY HealthIndicatorId"
-        );
-        queryWrapper.orderByDesc("RecordTime");
-
-        List<HealthIndicatorRecord> record = HealthIndicatorRecordMapper.selectList(queryWrapper);
+        // 查询所有符合条件的记录，按时间降序排序
+        List<HealthIndicatorRecord> allRecords = HealthIndicatorRecordMapper
+                .selectList(Wrappers.<HealthIndicatorRecord>lambdaQuery()
+                        .eq(HealthIndicatorRecord::getRecordUserId, input.getRecordUserId())
+                        .ge(HealthIndicatorRecord::getRecordTime, beginTime)
+                        .le(HealthIndicatorRecord::getRecordTime, endTime)
+                        .orderByDesc(HealthIndicatorRecord::getRecordTime));
+        
+        // 按HealthIndicatorId分组，每组只保留最新的一条记录
+        Map<Integer, HealthIndicatorRecord> recordMap = new HashMap<>();
+        for (HealthIndicatorRecord item : allRecords) {
+            if (!recordMap.containsKey(item.getHealthIndicatorId())) {
+                recordMap.put(item.getHealthIndicatorId(), item);
+            }
+        }
+        List<HealthIndicatorRecord> record = new ArrayList<>(recordMap.values());
 
         List<TodayHealthIndicatorRecordDto> todayHealthIndicatorRecordDtoList = new ArrayList<>();
         // 根据指标进行groupby
@@ -278,6 +282,66 @@ public class HealthIndicatorRecordServiceImpl extends ServiceImpl<HealthIndicato
 
         }
         return todayHealthIndicatorRecordDtoList;
+    }
+
+    /**
+     * 根据传入的分类id 和时间范围查询对应的指标数据
+     */
+    @Override
+    @SneakyThrows
+    public List<HealthIndicatorRecordGroupDto> RecordListStatistics(HealthIndicatorRecordPagedInput input) {
+        input.setRecordUserId(BaseContext.getCurrentUserDto().getUserId());
+        LambdaQueryWrapper<HealthIndicatorRecord> queryWrapper = BuilderQuery(input);
+        queryWrapper.orderByDesc(HealthIndicatorRecord::getRecordTime);
+
+        List<HealthIndicatorRecord> record = HealthIndicatorRecordMapper.selectList(queryWrapper);
+        var items = Extension.copyBeanList(record, HealthIndicatorRecordDto.class);
+
+        // 处理外键关联信息
+        DispatchItem(items);
+
+        // 先根据日期进行分组，然后取每个指标在该日期的最新记录
+        Map<LocalDate, Map<Integer, HealthIndicatorRecordDto>> dateGroupMap = new HashMap<>();
+
+        for (HealthIndicatorRecordDto item : items) {
+            LocalDate recordDate = item.getRecordTime().toLocalDate();
+            Integer indicatorId = item.getHealthIndicatorId();
+
+            // 如果该日期的分组不存在，创建新的分组
+            dateGroupMap.computeIfAbsent(recordDate, k -> new HashMap<>());
+
+            // 如果该日期该指标还没有记录，或者当前记录时间更晚，则更新记录
+            Map<Integer, HealthIndicatorRecordDto> indicatorMap = dateGroupMap.get(recordDate);
+            if (!indicatorMap.containsKey(indicatorId) ||
+                    item.getRecordTime().isAfter(indicatorMap.get(indicatorId).getRecordTime())) {
+                indicatorMap.put(indicatorId, item);
+            }
+        }
+
+        // 构建返回结果
+        List<HealthIndicatorRecordGroupDto> groupList = new ArrayList<>();
+        for (Map.Entry<LocalDate, Map<Integer, HealthIndicatorRecordDto>> dateEntry : dateGroupMap.entrySet()) {
+            HealthIndicatorRecordGroupDto groupDto = new HealthIndicatorRecordGroupDto();
+            groupDto.setDate(dateEntry.getKey());
+
+            // 将该日期下的所有指标记录转换为列表
+            List<HealthIndicatorRecordGroupItemDto> dayItems = new ArrayList<>();
+            for (Map.Entry<Integer, HealthIndicatorRecordDto> entry : dateEntry.getValue().entrySet()) {
+                HealthIndicatorRecordDto item = entry.getValue();
+                HealthIndicatorRecordGroupItemDto itemDto = new HealthIndicatorRecordGroupItemDto();
+                itemDto.setHealthIndicatorName(item.getHealthIndicatorDto().getName());
+                itemDto.setRecordValue(item.getRecordValue());
+                dayItems.add(itemDto);
+            }
+            groupDto.setItems(dayItems);
+
+            groupList.add(groupDto);
+        }
+
+        // 按日期降序排序
+        groupList.sort((a, b) -> b.getDate().compareTo(a.getDate()));
+
+        return groupList;
     }
 
 }

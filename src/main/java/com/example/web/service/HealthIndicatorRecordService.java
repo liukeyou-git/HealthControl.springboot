@@ -53,4 +53,9 @@ public interface HealthIndicatorRecordService extends IService<HealthIndicatorRe
      * 今日指标记录
      */
     public List<TodayHealthIndicatorRecordDto> TodayRecordList(HealthIndicatorRecordPagedInput input);
+
+    /**
+     * 根据传入的分类id和时间范围查询对应的指标数据统计
+     */
+    public List<HealthIndicatorRecordGroupDto> RecordListStatistics(HealthIndicatorRecordPagedInput input);
 }

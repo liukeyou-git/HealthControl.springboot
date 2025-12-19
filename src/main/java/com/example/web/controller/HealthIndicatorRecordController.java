@@ -96,4 +96,13 @@ public class HealthIndicatorRecordController {
     public List<TodayHealthIndicatorRecordDto> TodayRecordList(@RequestBody HealthIndicatorRecordPagedInput input) {
         return HealthIndicatorRecordService.TodayRecordList(input);
     }
+
+    /**
+     * 根据传入的分类id 和时间范围查询对应的指标数据
+     */
+    @RequestMapping(value = "/RecordListStatistics", method = RequestMethod.POST)
+    public List<HealthIndicatorRecordGroupDto> RecordListStatistics(
+            @RequestBody HealthIndicatorRecordPagedInput input) {
+        return HealthIndicatorRecordService.RecordListStatistics(input);
+    }
 }

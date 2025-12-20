@@ -21,52 +21,60 @@ public class AppUser extends BaseEntity {
      * 账号
      */
     @JsonProperty("UserName")
-    @TableField(value = "UserName", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "UserName", updateStrategy = FieldStrategy.IGNORED)
     private String UserName;
     /**
      * 密码
      */
     @JsonProperty("Password")
-    @TableField(value = "Password", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Password", updateStrategy = FieldStrategy.IGNORED)
     private String Password;
 
     /**
      * 邮箱
      */
     @JsonProperty("Email")
-    @TableField(value = "Email", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Email", updateStrategy = FieldStrategy.IGNORED)
     private String Email;
     /**
      * 头像
      */
     @JsonProperty("ImageUrls")
-    @TableField(value = "ImageUrls", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "ImageUrls", updateStrategy = FieldStrategy.IGNORED)
     private String ImageUrls;
     /**
      * 名称
      */
     @JsonProperty("Name")
-    @TableField(value = "Name", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Name", updateStrategy = FieldStrategy.IGNORED)
     private String Name;
     /**
      * 手机号码
      */
     @JsonProperty("PhoneNumber")
-    @TableField(value = "PhoneNumber", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "PhoneNumber", updateStrategy = FieldStrategy.IGNORED)
     private String PhoneNumber;
     /**
      * 出生年月
      */
     @JsonProperty("Birth")
-    @TableField(value = "Birth", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "Birth", updateStrategy = FieldStrategy.IGNORED)
     private LocalDateTime Birth;
 
     /**
      * 账号角色
      */
     @JsonProperty("RoleType")
-    @TableField(value = "RoleType", updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(value = "RoleType", updateStrategy = FieldStrategy.IGNORED)
     private Integer RoleType;
+
+    /**
+     * 性别
+     */
+    @JsonProperty("Gender")
+    @TableField(value = "Gender", updateStrategy = FieldStrategy.IGNORED)
+    private String Gender;
+
     /**
      * 把账号实体转换成账号传输模型
      */

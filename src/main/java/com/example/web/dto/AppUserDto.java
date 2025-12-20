@@ -64,11 +64,18 @@ public class AppUserDto extends BaseDto {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime Birth;
+
     /**
      * 账号角色
      */
     @JsonProperty("RoleType")
     private Integer RoleType;
+
+    /**
+     * 性别
+     */
+    @JsonProperty("Gender")
+    private String Gender;
 
     @JsonProperty("RoleTypeFormat")
     public String RoleTypeFormat() {

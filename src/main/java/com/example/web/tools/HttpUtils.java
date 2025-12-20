@@ -48,11 +48,11 @@ public   class HttpUtils {
 
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
-      
-      ObjectMapper mapper = new ObjectMapper();
-       mapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-       String jsonString = mapper.writeValueAsString(bodyData);
-      // String jsonString =   JSONObject.valueToString(bodyData);
+
+        ObjectMapper mapper = new ObjectMapper();
+//       mapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        String jsonString = mapper.writeValueAsString(bodyData);
+        // String jsonString =   JSONObject.valueToString(bodyData);
         StringEntity entity = new StringEntity(jsonString, "UTF-8");
 
         // post请求是将参数放在请求体里面传过去的;这里将entity放入post请求体中
@@ -80,7 +80,8 @@ public   class HttpUtils {
             System.out.println("响应状态为:" + response.getStatusLine());
             if (responseEntity != null) {
                 System.out.println("响应内容长度为:" + responseEntity.getContentLength());
-                System.out.println("响应内容为:" + EntityUtils.toString(responseEntity));
+                result = EntityUtils.toString(responseEntity);
+                System.out.println("响应内容为:" + result);
             }
 
         } finally {
@@ -98,7 +99,7 @@ public   class HttpUtils {
             }
         }
 
-        return "成功";
+        return result;
     }
 
 

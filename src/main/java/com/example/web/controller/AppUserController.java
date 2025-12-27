@@ -18,12 +18,13 @@ import com.example.web.tools.dto.IdInput;
 import com.example.web.tools.dto.IdsInput;
 import com.example.web.tools.dto.PagedResult;
 import com.example.web.tools.dto.ResponseData;
-
-import jakarta.servlet.http.HttpServletRequest; 
+import com.example.web.tools.WeiXinUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import com.example.web.tools.Extension;
 import com.example.web.tools.exception.CustomException;
+
 /**
  * 账号控制器
  */
@@ -81,6 +82,16 @@ public class AppUserController {
      */
     @RequestMapping(value = "/SignIn", method = RequestMethod.POST)
     public ResponseData<String> SignIn(@RequestBody AppUserDto input, HttpServletRequest request) {
+
+        if (Extension.isNotNullOrEmpty(input.getWxCode())) {
+
+            // 根据wxcode得到openId
+            String openId = WeiXinUtils.GetOpenIdByCode(input.getWxCode());
+            if (Extension.isNullOrEmpty(openId)) {
+                throw new CustomException("获取openId失败,请检查appid和secret是否正确");
+            }
+            input.setOpenId(openId);
+        }
         String token = AppUserService.SignIn(input);
         return ResponseData.GetResponseDataInstance(token, "登录成功", true);
     }
@@ -141,5 +152,26 @@ public class AppUserController {
     public void Export(@RequestParam String query, HttpServletResponse response) throws IOException {
         AppUserService.Export(query, response);
     }
-  
+
+    /**
+     * 绑定微信
+     */
+    @RequestMapping(value = "/BindWechat", method = RequestMethod.POST)
+    public void BindWechat(@RequestBody AppUserDto input) {
+        // 根据wxcode得到openId
+        String openId = WeiXinUtils.GetOpenIdByCode(input.getWxCode());
+        if (Extension.isNullOrEmpty(openId)) {
+            throw new CustomException("获取openId失败,请检查appid和secret是否正确");
+        }
+        input.setOpenId(openId);
+        AppUserService.BindWechat(input);
+    }
+
+    /**
+     * 解绑
+     */
+    @RequestMapping(value = "/UnbindWechat", method = RequestMethod.POST)
+    public void UnbindWechat(@RequestBody AppUserDto input) {
+        AppUserService.UnbindWechat(input);
+    }
 }

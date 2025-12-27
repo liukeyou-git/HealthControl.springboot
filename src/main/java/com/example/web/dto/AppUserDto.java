@@ -83,6 +83,18 @@ public class AppUserDto extends BaseDto {
     };
 
     /**
+     * OpenId
+     */
+    @JsonProperty("OpenId")
+    private String OpenId;
+
+    /**
+     * wxcode
+     */
+    @JsonProperty("WxCode")
+    private String WxCode;
+
+    /**
      * 把账号传输模型转换成账号实体
      */
     public AppUser MapToEntity() throws InvocationTargetException, IllegalAccessException {

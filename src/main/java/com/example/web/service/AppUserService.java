@@ -74,4 +74,13 @@ public interface AppUserService extends IService<AppUser> {
      */
     public void Export(@RequestParam String query, HttpServletResponse response) throws IOException;
 
+    /**
+     * 绑定微信
+     */
+    public void BindWechat(AppUserDto input);
+
+    /**
+     * 解绑
+     */
+    public void UnbindWechat(AppUserDto input);
 }

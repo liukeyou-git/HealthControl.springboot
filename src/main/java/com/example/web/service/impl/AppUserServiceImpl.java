@@ -52,7 +52,6 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     private AppUserMapper AppUserMpper;
 
     @Override
-    @SneakyThrows
     public PagedResult<AppUserDto> List(AppUserPagedInput input) {
         // 声明一个支持账号查询的(拉姆达)表达式
         LambdaQueryWrapper<AppUser> queryWrapper = Wrappers.<AppUser>lambdaQuery()
@@ -79,6 +78,9 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 如果前端搜索传入getRoleType不为空,则进行精确查询
         if (input.getRoleType() != null) {
             queryWrapper = queryWrapper.eq(AppUser::getRoleType, input.getRoleType());
+        }
+        if (Extension.isNotNullOrEmpty(input.getOpenId())) {
+            queryWrapper = queryWrapper.eq(AppUser::getOpenId, input.getOpenId());
         }
 
         // 按创建时间从大到小排序 最新的显示在最前面
@@ -166,7 +168,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         return List(input).getItems().stream().findFirst().orElse(new AppUserDto());
     }
 
-   /**
+    /**
      * 登录
      */
     public String SignIn(AppUserDto input) {
@@ -176,6 +178,9 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         }
         if (Extension.isNotNullOrEmpty(input.getPassword())) {
             queryWrapper.eq(AppUser::getPassword, Extension.MD5Encrypt(input.getPassword()));
+        }
+        if (Extension.isNotNullOrEmpty(input.getOpenId())) {
+            queryWrapper.eq(AppUser::getOpenId, input.getOpenId());
         }
         if (input.getRoleType() != null) {
             queryWrapper.eq(AppUser::getRoleType, input.getRoleType());
@@ -234,7 +239,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
 
         // 检查账号名是否存在
         AppUser appUser = AppUserMpper.selectList(Wrappers.<AppUser>lambdaQuery()
-                .eq(Extension.isNotNullOrEmpty(input.getUserName()), AppUser::getUserName, input.getUserName()))
+                        .eq(Extension.isNotNullOrEmpty(input.getUserName()), AppUser::getUserName, input.getUserName()))
                 .stream().findFirst().orElse(null);
 
         if (appUser == null) {
@@ -243,7 +248,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         if (appUser.getPhoneNumber() == null) {
             throw new CustomException("该账号未绑定手机号!");
         }
-        if (Extension.isNotNullOrEmpty(input.getEmail())&& appUser.getEmail() == null) {
+        if (appUser.getEmail() == null) {
             throw new CustomException("该账号未绑定邮箱!");
         }
         if (!appUser.getPhoneNumber().equals(input.getPhoneNumber())) {
@@ -364,5 +369,31 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
 
         // workbook将Excel写入到response的输出流中，供页面下载
         workbook.write(response.getOutputStream());
+    }
+
+    /**
+     * 绑定微信
+     */
+    @Override
+    public void BindWechat(AppUserDto input) {
+        // 查询此openId是否被其他账号绑定
+        Long openIdCount = AppUserMpper.selectCount(Wrappers.<AppUser>lambdaQuery()
+                .eq(Extension.isNotNullOrEmpty(input.getOpenId()), AppUser::getOpenId, input.getOpenId()));
+        if (openIdCount > 0) {
+            throw new CustomException("该openId已经被其他账号绑定!");
+        }
+        AppUser appUser = AppUserMpper.selectById(input.getId());
+        appUser.setOpenId(input.getOpenId());
+        saveOrUpdate(appUser);
+    }
+
+    /**
+     * 解绑
+     */
+    @Override
+    public void UnbindWechat(AppUserDto input) {
+        AppUser appUser = AppUserMpper.selectById(input.getId());
+        appUser.setOpenId(null);
+        saveOrUpdate(appUser);
     }
 }

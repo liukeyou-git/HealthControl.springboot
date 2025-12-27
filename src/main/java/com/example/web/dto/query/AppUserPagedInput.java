@@ -38,4 +38,9 @@ public class AppUserPagedInput extends PagedInput {
      */
     @JsonProperty("RoleType")
     private Integer RoleType;
+    /**
+     * OpenId
+     */
+    @JsonProperty("OpenId")
+    private String OpenId;
 }

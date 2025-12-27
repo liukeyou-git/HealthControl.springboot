@@ -76,6 +76,13 @@ public class AppUser extends BaseEntity {
     private String Gender;
 
     /**
+     * OpenId
+     */
+    @JsonProperty("OpenId")
+    @TableField(value = "OpenId", updateStrategy = FieldStrategy.IGNORED)
+    private String OpenId;
+
+    /**
      * 把账号实体转换成账号传输模型
      */
     public AppUserDto MapToDto() throws InvocationTargetException, IllegalAccessException {

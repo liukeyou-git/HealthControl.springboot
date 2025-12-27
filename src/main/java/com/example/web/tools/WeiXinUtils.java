@@ -10,8 +10,8 @@ import java.util.Map;
 public class WeiXinUtils {
 
     public static final String WECHAT_SENDMSG_URL = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?";
-    public static final String APP_ID = "wx16309bbce9569a02";
-    public static final String APP_SECRET = "6eae03f1ba5e7579d3c3603f4cd2ab3c";
+    public static final String APP_ID = "wx9ffcce8d767c70f2";
+    public static final String APP_SECRET = "ea7613308678a281f7a6a7767fcc4753";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

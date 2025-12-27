@@ -51,6 +51,11 @@ public class MessageNoticeServiceImpl extends ServiceImpl<MessageNoticeMapper, M
      */
     @Autowired
     private MessageNoticeMapper MessageNoticeMapper;
+    /**
+     * 操作数据库的HealthNotice表mapper对象
+     */
+    @Autowired
+    private HealthNoticeMapper HealthNoticeMapper;
 
     /**
      * 构建表查询sql
@@ -204,19 +209,28 @@ public class MessageNoticeServiceImpl extends ServiceImpl<MessageNoticeMapper, M
     public void AutoSendEmail() {
         LambdaQueryWrapper<MessageNotice> queryWrapper = Wrappers.<MessageNotice>lambdaQuery()
                 .eq(MessageNotice::getIsSend, false)
-                .eq(MessageNotice::getType, "邮箱")
                 .le(MessageNotice::getPlanSendTime, LocalDateTime.now());
         List<MessageNotice> messageNotices = MessageNoticeMapper.selectList(queryWrapper);
         for (MessageNotice messageNotice : messageNotices) {
 
-            var result = EmailUtil.sendTextMail(messageNotice.getTargetKey(), messageNotice.getTitle(),
-                    messageNotice.getContent());
+            if ("健康提醒".equals(messageNotice.getType())) {
 
-            messageNotice.setIsSend(true);
-            messageNotice.setActualSendTime(LocalDateTime.now());
-            messageNotice.setIsSuccess(result);
-            messageNotice.setResultMsg(result ? "发送成功" : "发送失败");
-            MessageNoticeMapper.updateById(messageNotice);
+                var result = EmailUtil.sendTextMail(messageNotice.getTargetKey(), messageNotice.getTitle(),
+                        messageNotice.getContent());
+
+                messageNotice.setIsSend(true);
+                messageNotice.setActualSendTime(LocalDateTime.now());
+                messageNotice.setIsSuccess(result);
+                messageNotice.setResultMsg(result ? "发送成功" : "发送失败");
+                MessageNoticeMapper.updateById(messageNotice);
+
+                HealthNotice healthNotice = HealthNoticeMapper.selectById(messageNotice.getRelationNo());
+                if (healthNotice != null) {
+                    healthNotice.setIsRemind(true);
+                    HealthNoticeMapper.updateById(healthNotice);
+                }
+
+            }
         }
     }
 

@@ -12,7 +12,7 @@ public class EmailUtil {
 
     private static JavaMailSender javaMailSender;
 
-    private static final String CommEmail="806105498@qq.com";
+    private static final String CommEmail="3077757494@qq.com";
     @Resource
     public void setJavaMailSender(JavaMailSender javaMailSender) {
         EmailUtil.javaMailSender = javaMailSender;

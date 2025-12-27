@@ -8,13 +8,18 @@ spring:
   #配置邮箱信息
   mail:
     username: 3077757494@qq.com
-    password: '@Liukeyou00'
+    # 授权码生成方法：登录QQ邮箱网页版 -> 设置 -> 账号与安全 -> 安全设置 -> 开启POP3/IMAP/SMTP服务 -> 生成授权码
+    password: ctepbeechumrdfjc
     host: smtp.qq.com
     properties:
       mail:
         smtp:
           ssl:
             enable: true
+          auth: true
+          starttls:
+            enable: true
+            required: true
   servlet:
     multipart: #文件的上传配置
       max-request-size: 10000MB #请求的最大报文长度不能超过10000MB
